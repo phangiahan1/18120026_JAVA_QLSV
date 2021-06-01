@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="hibernate.Course" table="course" schema="qlsv">
+        <id name="fMaHp">
+            <column name="f_maHP" sql-type="int(11)"/>
+        </id>
+        <property name="fPhongHoc">
+            <column name="f_phongHoc" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="fCaHoc">
+            <column name="f_caHoc" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="fThuHoc">
+            <column name="f_thuHoc" sql-type="varchar(255)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

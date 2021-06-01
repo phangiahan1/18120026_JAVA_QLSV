@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="hibernate.Accounts" table="accounts" schema="qlsv">
+        <id name="fMaTk">
+            <column name="f_maTK" sql-type="int(11)"/>
+        </id>
+        <property name="fTaiKhoan">
+            <column name="f_taiKhoan" sql-type="varchar(10)" length="10"/>
+        </property>
+        <property name="fPass">
+            <column name="f_pass" sql-type="varchar(255)"/>
+        </property>
+        <property name="fHoTen">
+            <column name="f_hoTen" sql-type="varchar(255)"/>
+        </property>
+        <property name="fNgaySinh">
+            <column name="f_ngaySinh" sql-type="date" not-null="true"/>
+        </property>
+        <property name="fType">
+            <column name="f_type" sql-type="int(11)"/>
+        </property>
+        <property name="fDiaChi">
+            <column name="f_diaChi" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="fDienThoai">
+            <column name="f_dienThoai" sql-type="varchar(12)" length="12" not-null="true"/>
+        </property>
+        <property name="fGioiTinh">
+            <column name="f_gioiTinh" sql-type="varchar(5)" length="5" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>
