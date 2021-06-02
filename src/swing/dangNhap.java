@@ -12,6 +12,7 @@ import java.util.List;
 
 
 public class dangNhap {
+    private static JFrame close;
     List<Accounts> rs = AccountDAO.getAllAccounts();
     private JPanel mainPanel;
     private JButton btnDangNhap;
@@ -44,6 +45,9 @@ public class dangNhap {
                             if (item.getfPass().equals(password)) {
                                 showDialogAgain("Đăng nhập thành công");
                                 accounts = item;
+                                close.dispose();
+                                trangChu.init(accounts);
+
                             } else {
                                 showDialogAgain("Sai mật khẩu");
                             }
@@ -55,6 +59,7 @@ public class dangNhap {
                     }
                 }
             }
+
         });
         btnX.addMouseListener(new MouseAdapter() {
             @Override
@@ -70,6 +75,7 @@ public class dangNhap {
                 System.exit(0);
             }
         });
+
     }
 
     private boolean showDialog() {
@@ -90,4 +96,15 @@ public class dangNhap {
 //        frame.pack();
 //        frame.setVisible(true);
 //    }
+
+    public static void init() {
+        JFrame frame = new JFrame("dangNhap");
+        frame.setLocationRelativeTo(null);
+        frame.setContentPane(new dangNhap().mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        close = frame;
+    }
+
 }
