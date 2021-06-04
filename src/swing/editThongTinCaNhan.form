@@ -15,6 +15,7 @@
         </constraints>
         <properties>
           <background color="-1"/>
+          <enabled value="true"/>
           <visible value="true"/>
         </properties>
         <border type="none"/>
@@ -173,6 +174,7 @@
             </constraints>
             <properties>
               <background color="-1"/>
+              <enabled value="false"/>
               <font size="16" style="0"/>
               <foreground color="-16777216"/>
               <text value="Nam"/>
@@ -184,6 +186,7 @@
             </constraints>
             <properties>
               <background color="-1"/>
+              <enabled value="false"/>
               <font size="16" style="0"/>
               <foreground color="-16777216"/>
               <text value="Nữ"/>
@@ -195,6 +198,7 @@
             </constraints>
             <properties>
               <background color="-11447983"/>
+              <enabled value="false"/>
             </properties>
             <border type="none"/>
             <children/>

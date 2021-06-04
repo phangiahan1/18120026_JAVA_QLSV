@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
+import java.util.Date;
 import java.util.List;
 
 public class AccountDAO {
@@ -28,7 +29,7 @@ public class AccountDAO {
         return accounts;
     }
 
-    public static Accounts getAccount(String fTaiKhoan) {
+    public static Accounts getAccount(int fTaiKhoan) {
         Accounts acc = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -42,11 +43,12 @@ public class AccountDAO {
 //            acc = (Accounts) session.get(Accounts.class,id);
 
 
-            List<Accounts> list = session.createQuery("FROM Accounts WHERE fTaiKhoan LIKE :fTaiKhoan")
-                    .setParameter("fTaiKhoan", "%" + fTaiKhoan + "%").list();
-            for (Accounts obj : list) {
-                acc = obj;
-            }
+//            List<Accounts> list = session.createQuery("FROM Accounts WHERE fTaiKhoan LIKE :fTaiKhoan")
+//                    .setParameter("fTaiKhoan", "%" + fTaiKhoan + "%").list();
+//            for (Accounts obj : list) {
+//                acc = obj;
+//            }
+            acc = (Accounts) session.get(Accounts.class, fTaiKhoan);
 
         } catch (HibernateException e) {
             System.err.println();
@@ -54,6 +56,28 @@ public class AccountDAO {
             session.close();
         }
         return acc;
+    }
+
+    public static void UpdateThongTin(int maSo, String mk, Date ngaySinh, String dt, String dc, int loai) {
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Accounts tam = getAccount(maSo);
+
+        Date date = ngaySinh;
+
+        Accounts s = tam;
+        s.setfPass(mk);
+        s.setfDiaChi(dc);
+        s.setfDienThoai(dt);
+        s.setfNgaySinh((java.sql.Date) date);
+
+        session.beginTransaction();
+        session.update(s);
+        session.getTransaction().commit();
+        session.close();
+
+
     }
 
 }

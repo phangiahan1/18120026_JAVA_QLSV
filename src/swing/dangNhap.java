@@ -27,6 +27,7 @@ public class dangNhap {
 
 
     public dangNhap() {
+
         btnDangNhap.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,11 +79,11 @@ public class dangNhap {
 
     }
 
-    private boolean showDialog() {
-        int dialogResult = JOptionPane.showConfirmDialog(null,
-                "!!! Hành động này sẽ lưu thông tin xuống CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
-        return dialogResult == JOptionPane.YES_OPTION;
-    }
+//    private boolean showDialog() {
+//        int dialogResult = JOptionPane.showConfirmDialog(null,
+//                "!!! Hành động này sẽ lưu thông tin xuống CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+//        return dialogResult == JOptionPane.YES_OPTION;
+//    }
 
     private void showDialogAgain(String str) {
         JOptionPane.showMessageDialog(null, str);
