@@ -1,5 +1,6 @@
 package swing;
 
+import com.toedter.calendar.JDateChooser;
 import dao.AccountDAO;
 import hibernate.Accounts;
 
@@ -8,17 +9,22 @@ import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class trangChu {
     private static Accounts acc = null;
     java.util.List<Accounts> rs = AccountDAO.getAllAccounts();
+    java.util.List<Accounts> rsGV = null;
+
     Border dark_gray_border = BorderFactory.createMatteBorder(1, 0, 1, 0, Color.DARK_GRAY);
     Border default_border = BorderFactory.createMatteBorder(1, 0, 1, 0, new Color(237, 251, 255));
+    //datechosser gv
+    JDateChooser dateChooserGv;
+    Calendar today = Calendar.getInstance();
     //create array of jLabel
     JLabel[] menuLabels = new JLabel[9];
     //creat array of jPanel
@@ -67,21 +73,29 @@ public class trangChu {
     private JPanel jpSearchGiaoVu;
     private JTable table1;
     private JPanel panel;
-    private JLabel lbTen1;
-    private JLabel lbMk1;
-    private JLabel lbNs1;
-    private JLabel lbDc1;
-    private JLabel lbDt1;
-    private JLabel lbGt1;
+    private JPasswordField tMkagv;
+    private JRadioButton raBtnNamgv;
+    private JRadioButton raBtnNugv;
+    private JPanel pnNgaySinhGV;
     private JButton btnUpdateGV;
     private JButton btnSaveGV;
+    private JButton btnDeleteGV;
+    private JButton btnEditGV;
     private JButton btnResetGV;
+    private JTextField tTenGV;
+    private JPasswordField tMkgv;
+    private JTextField tDcgv;
+    private JTextField tDtgv;
+    private JTextField tTaiKhoanGv;
+    private JRadioButton raBtnAdmin;
+    private JRadioButton raBtnGv;
     private javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+    //cho bang giao vu
     private Accounts selectedAcc;
     private int selectedIndex;
 
-
     public trangChu() {
+
         //set text cho thong tin ca nhan
         lbName.setText(acc.getfTaiKhoan());
         tfDC.setText(acc.getfDiaChi());
@@ -110,24 +124,154 @@ public class trangChu {
         menuPanels[6] = jpHP;
         menuPanels[7] = jpDKHP;
         menuPanels[8] = jpSVHP;
-        //Danh cho bang Giao vu
-        String[] columnsGV = new String[]{"STT", "Tài khoản", "Mật khẩu", "Họ tên", "Ngày sinh", "Địa chỉ", "SDT", "Giới tính"};
+        //Danh cho thong tin ca nhan
+        btnEditThongTin.addActionListener(e -> editThongTinCaNhan.init(acc));
+        btnReTT.addActionListener(e -> update());
+//Danh cho bang Giao vu
+        showTableGiaoVu();
+
+        addActionToMenuLabels();
+        showPAnel(jpThongTin);
+        //add radio button
+        ButtonGroup bggv = new ButtonGroup();
+        bggv.add(raBtnNamgv);
+        bggv.add(raBtnNugv);
+
+        ButtonGroup loaiGv = new ButtonGroup();
+        loaiGv.add(raBtnAdmin);
+        loaiGv.add(raBtnGv);
+        //add JDateChooser
+        dateChooserGv = new JDateChooser(today.getTime());
+        dateChooserGv.setDateFormatString("yyyy-MM-dd");
+        pnNgaySinhGV.add(dateChooserGv);
+
+        btnEditGV.addActionListener(e -> {
+            java.util.List<Accounts> rsGV2 = AccountDAO.getAllAccountsGV();
+            selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
+            selectedAcc = rsGV2.get(selectedIndex);
+            if (showDialog()) {
+                AccountDAO.updateAccount(selectedAcc);
+                showDialogAgain("Edit thành công!!!");
+                panel.removeAll();
+                showTableGiaoVu();
+                resetTxt();
+            } else {
+                showDialogAgain("Edit không hoàn thành!!!");
+                resetTxt();
+            }
+        });
+        btnResetGV.addActionListener(e -> {
+            resetTxt();
+        });
+        btnSaveGV.addActionListener(e -> {
+            Accounts accNew = new Accounts();
+            accNew.setfPass(String.valueOf(tMkgv.getPassword()));
+            accNew.setfDienThoai(tDtgv.getText());
+            accNew.setfDiaChi(tDcgv.getText());
+            accNew.setfHoTen(tTenGV.getText());
+            accNew.setfTaiKhoan(tTaiKhoanGv.getText());
+            java.util.Date utilDate = dateChooserGv.getDate();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            accNew.setfNgaySinh(sqlDate);
+            if (raBtnNamgv.isSelected()) {
+                accNew.setfGioiTinh("Nam");
+            }
+            if (raBtnNugv.isSelected()) {
+                accNew.setfGioiTinh("Nữ");
+            }
+            if (raBtnAdmin.isSelected()) {
+                accNew.setfType(1);
+            }
+            if (raBtnGv.isSelected()) {
+                accNew.setfType(2);
+            }
+            if (tTenGV.getText().equals("") || String.valueOf(tMkgv.getPassword()).equals("") || tTaiKhoanGv.getText().equals("")) {
+                showDialogAgain("Cần nhập đầy đủ: Tài khoản, Mật khẩu, Loại");
+            } else {
+                if (AccountDAO.isExistedAcc(accNew)) {
+                    showDialogAgain("Tài khoản đã tồn tại!!!");
+                    resetTxt();
+                } else {
+                    if (showDialog()) {
+                        AccountDAO.saveAccount(accNew);
+                        showDialogAgain("Lưu thành công!!!");
+                        panel.removeAll();
+                        showTableGiaoVu();
+                        resetTxt();
+                    } else {
+                        showDialogAgain("Lưu không thành công!!!");
+                        resetTxt();
+                    }
+                }
+            }
+        });
+        btnDeleteGV.addActionListener(e -> {
+            java.util.List<Accounts> rsGV1 = AccountDAO.getAllAccountsGV();
+            selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
+            selectedAcc = rsGV1.get(selectedIndex);
+            if (showDialogDelete()) {
+                AccountDAO.deleteAccount(selectedAcc);
+                showDialogAgain("Xóa thành công!!!");
+                panel.removeAll();
+                showTableGiaoVu();
+                resetTxt();
+            } else {
+                showDialogAgain("Xóa không hoàn thành!!!");
+                resetTxt();
+            }
+        });
+        table1.getSelectionModel().addListSelectionListener(e -> {
+            if (!table1.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Accounts> rsGV1 = AccountDAO.getAllAccountsGV();
+                selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
+                selectedAcc = rsGV1.get(selectedIndex);
+                if (selectedAcc != null) {
+                    tTaiKhoanGv.setText(selectedAcc.getfTaiKhoan());
+                    tTenGV.setText(selectedAcc.getfHoTen());
+                    tMkgv.setText(selectedAcc.getfPass());
+                    tDtgv.setText(selectedAcc.getfDienThoai());
+                    tDcgv.setText(selectedAcc.getfDiaChi());
+                    if (selectedAcc.getfGioiTinh().equals("Nam")) {
+                        raBtnNamgv.setSelected(true);
+                        raBtnNugv.setSelected(false);
+                    } else {
+                        raBtnNugv.setSelected(true);
+                        raBtnNamgv.setSelected(false);
+                    }
+                    if (selectedAcc.getfType() == 1) {
+                        raBtnAdmin.setSelected(true);
+                        raBtnGv.setSelected(false);
+                    } else {
+                        raBtnGv.setSelected(true);
+                        raBtnAdmin.setSelected(false);
+                    }
+                    dateChooserGv.setDate(selectedAcc.getfNgaySinh());
+                }
+            }
+        });
+    }
+
+    //show table giao vu
+    public void showTableGiaoVu() {
+        String[] columnsGV = new String[]{"STT", "Tài khoản", "Mật khẩu", "Họ tên", "Ngày sinh", "Địa chỉ", "SDT", "Giới tính", "Loại"};
         TableModel dataModelGV = new
                 AbstractTableModel() {
+                    List<Accounts> rsGVrsGV = AccountDAO.getAllAccountsGV();
+
                     public String getColumnName(int columnIndex) {
                         return columnsGV[columnIndex];
                     }
 
                     public int getColumnCount() {
-                        return 8;
+                        return 9;
                     }
 
                     public int getRowCount() {
-                        return rs.size();
+                        return rsGVrsGV.size();
                     }
 
                     public Object getValueAt(int rowIndex, int columnIndex) {
-                        Accounts si = rs.get(rowIndex);
+                        Accounts si = rsGVrsGV.get(rowIndex);
                         switch (columnIndex) {
                             case 0:
                                 return si.getfMaTk();
@@ -145,6 +289,8 @@ public class trangChu {
                                 return si.getfDienThoai();
                             case 7:
                                 return si.getfGioiTinh();
+                            case 8:
+                                return si.getfType();
                         }
                         return null;
                     }
@@ -153,6 +299,7 @@ public class trangChu {
                     public Class<?> getColumnClass(int columnIndex) {
                         switch (columnIndex) {
                             case 0:
+                            case 8:
                                 return Integer.class;
                             case 1:
                             case 2:
@@ -173,35 +320,7 @@ public class trangChu {
         panel.add(table1.getTableHeader(), BorderLayout.NORTH);
         table1.setAutoCreateRowSorter(true);
         table1.setModel(dataModelGV);
-
-
-        addActionToMenuLabels();
-        showPAnel(jpThongTin);
-
-        btnEditThongTin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editThongTinCaNhan.init(acc);
-            }
-
-        });
-        btnReTT.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                update();
-            }
-        });
-        btnUpdateGV.addActionListener(e -> {
-
-        });
-        btnResetGV.addActionListener(e -> {
-
-        });
-        btnSaveGV.addActionListener(e -> {
-
-        });
     }
-
 
     public static void init(Accounts account) {
         acc = account;
@@ -213,7 +332,7 @@ public class trangChu {
         frame.setVisible(true);
     }
 
-
+    //Update thong tin ca nhan
     public void update() {
         acc = AccountDAO.getAccount(acc.getfMaTk());
 
@@ -227,6 +346,7 @@ public class trangChu {
         System.out.println("đã vô đây");
     }
 
+    //show panel khi click chon label tuong ung
     public void showPAnel(JPanel jPanel) {
         for (JPanel jp : menuPanels) {
             jp.setVisible(false);
@@ -301,7 +421,6 @@ public class trangChu {
         }
     }
 
-
     public void setLabelBackround(JLabel label) {
         for (JLabel menuItem : menuLabels) {
             menuItem.setBackground(new Color(237, 251, 255));
@@ -309,6 +428,34 @@ public class trangChu {
         }
         label.setBackground(Color.DARK_GRAY);
         label.setForeground(Color.WHITE);
+    }
+
+    private boolean showDialog() {
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "!!! Hành động này sẽ lưu thông tin xuống CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
+    }
+
+    private boolean showDialogDelete() {
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "!!! Hành động này sẽ xóa thông tin trong CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
+    }
+
+    private void showDialogAgain(String str) {
+        JOptionPane.showMessageDialog(null, str);
+    }
+
+    public void resetTxt() {
+        tMkgv.setText("");
+        tDcgv.setText("");
+        tDtgv.setText("");
+        tTaiKhoanGv.setText("");
+        tTenGV.setText("");
+        raBtnGv.setSelected(false);
+        raBtnAdmin.setSelected(false);
+        raBtnNugv.setSelected(false);
+        raBtnNamgv.setSelected(false);
     }
 
 
