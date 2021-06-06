@@ -143,20 +143,17 @@ public class AccountDAO {
 //        }
 //        return kq;
         //open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Boolean kq = false;
-        try {
-            final String hql = "select acc from Accounts acc where acc.fTaiKhoan=" + accounts.getfTaiKhoan();
-            Query query = session.createQuery(hql);
-            if (query.equals(null)) {
+        boolean kq = false;
+        List<Accounts> list = AccountDAO.getAllAccounts();
+        for (Accounts accounts1 : list) {
+            if (accounts1.getfTaiKhoan().equals(accounts.getfTaiKhoan())) {
                 kq = true;
             }
-        } catch (HibernateException e) {
-            System.err.println(e);
-        } finally {
-            session.close();
         }
         return kq;
+
+//
+
     }
 
     public static boolean saveAccount(Accounts accounts) {

@@ -40,23 +40,26 @@ public class dangNhap {
                 } else if (password.trim().equals("")) {
                     showDialogAgain("Vui lòng điền mật khẩu!!!");
                 } else {
+                    int kt = 0;
                     for (Accounts item : rs) {
-                        System.out.println(item.toString());
                         if (item.getfTaiKhoan().equals(username)) {
+                            kt = 1;
                             if (item.getfPass().equals(password)) {
                                 showDialogAgain("Đăng nhập thành công");
                                 accounts = item;
                                 close.dispose();
                                 trangChu.init(accounts);
-
                             } else {
                                 showDialogAgain("Sai mật khẩu");
+                                txtPass.setText("");
                             }
                             break;
                         }
                     }
-                    if (accounts == null) {
+                    if (kt == 0) {
                         showDialogAgain("Tài khoản không tồn tại");
+                        txtPass.setText("");
+                        txtTaiKhoan.setText("");
                     }
                 }
             }
@@ -78,25 +81,9 @@ public class dangNhap {
         });
 
     }
-
-//    private boolean showDialog() {
-//        int dialogResult = JOptionPane.showConfirmDialog(null,
-//                "!!! Hành động này sẽ lưu thông tin xuống CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
-//        return dialogResult == JOptionPane.YES_OPTION;
-//    }
-
     private void showDialogAgain(String str) {
         JOptionPane.showMessageDialog(null, str);
     }
-    // jf test
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("dangNhap");
-//        frame.setLocationRelativeTo(null);
-//        frame.setContentPane(new dangNhap().mainPanel);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
 
     public static void init() {
         JFrame frame = new JFrame("dangNhap");

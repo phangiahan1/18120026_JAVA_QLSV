@@ -95,56 +95,15 @@ public class trangChu {
     private int selectedIndex;
 
     public trangChu() {
-
-        //set text cho thong tin ca nhan
-        lbName.setText(acc.getfTaiKhoan());
-        tfDC.setText(acc.getfDiaChi());
-        tfDT.setText(acc.getfDienThoai());
-        tfGT.setText(acc.getfGioiTinh());
-        tfNS.setText("" + acc.getfNgaySinh());
-        tfTen.setText(acc.getfHoTen());
-        tfMK.setText(acc.getfPass());
-        //main menu
-        menuLabels[0] = lbThongTin;
-        menuLabels[1] = lbGiaoVu;
-        menuLabels[2] = lbSV;
-        menuLabels[3] = lbMH;
-        menuLabels[4] = lbHK;
-        menuLabels[5] = lbLH;
-        menuLabels[6] = lbQLHP;
-        menuLabels[7] = lbDKHP;
-        menuLabels[8] = lbSV_HP;
-        //main panel
-        menuPanels[0] = jpThongTin;
-        menuPanels[1] = jpGiaoVu;
-        menuPanels[2] = jpSV;
-        menuPanels[3] = jpMonHoc;
-        menuPanels[4] = jpHK;
-        menuPanels[5] = jpLopHoc;
-        menuPanels[6] = jpHP;
-        menuPanels[7] = jpDKHP;
-        menuPanels[8] = jpSVHP;
-        //Danh cho thong tin ca nhan
+        //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
+        initALL();
+        //btn Thông tin cá nhân
         btnEditThongTin.addActionListener(e -> editThongTinCaNhan.init(acc));
         btnReTT.addActionListener(e -> update());
-//Danh cho bang Giao vu
-        showTableGiaoVu();
 
-        addActionToMenuLabels();
-        showPAnel(jpThongTin);
-        //add radio button
-        ButtonGroup bggv = new ButtonGroup();
-        bggv.add(raBtnNamgv);
-        bggv.add(raBtnNugv);
-
-        ButtonGroup loaiGv = new ButtonGroup();
-        loaiGv.add(raBtnAdmin);
-        loaiGv.add(raBtnGv);
-        //add JDateChooser
-        dateChooserGv = new JDateChooser(today.getTime());
-        dateChooserGv.setDateFormatString("yyyy-MM-dd");
-        pnNgaySinhGV.add(dateChooserGv);
-
+        //Khởi tạo dữ liệu cho bảng giáo vụ
+        initGiaoVu();
+        //btn Giáo vụ
         btnEditGV.addActionListener(e -> {
             java.util.List<Accounts> rsGV2 = AccountDAO.getAllAccountsGV();
             selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
@@ -249,79 +208,11 @@ public class trangChu {
                 }
             }
         });
+
+        //Khởi tạo dữ liệu cho bảng sinh viên
     }
 
-    //show table giao vu
-    public void showTableGiaoVu() {
-        String[] columnsGV = new String[]{"STT", "Tài khoản", "Mật khẩu", "Họ tên", "Ngày sinh", "Địa chỉ", "SDT", "Giới tính", "Loại"};
-        TableModel dataModelGV = new
-                AbstractTableModel() {
-                    List<Accounts> rsGVrsGV = AccountDAO.getAllAccountsGV();
-
-                    public String getColumnName(int columnIndex) {
-                        return columnsGV[columnIndex];
-                    }
-
-                    public int getColumnCount() {
-                        return 9;
-                    }
-
-                    public int getRowCount() {
-                        return rsGVrsGV.size();
-                    }
-
-                    public Object getValueAt(int rowIndex, int columnIndex) {
-                        Accounts si = rsGVrsGV.get(rowIndex);
-                        switch (columnIndex) {
-                            case 0:
-                                return si.getfMaTk();
-                            case 1:
-                                return si.getfTaiKhoan();
-                            case 2:
-                                return si.getfPass();
-                            case 3:
-                                return si.getfHoTen();
-                            case 4:
-                                return si.getfNgaySinh();
-                            case 5:
-                                return si.getfDiaChi();
-                            case 6:
-                                return si.getfDienThoai();
-                            case 7:
-                                return si.getfGioiTinh();
-                            case 8:
-                                return si.getfType();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    public Class<?> getColumnClass(int columnIndex) {
-                        switch (columnIndex) {
-                            case 0:
-                            case 8:
-                                return Integer.class;
-                            case 1:
-                            case 2:
-                            case 3:
-                            case 5:
-                            case 6:
-                            case 7:
-                                return String.class;
-                            case 4:
-                                return Date.class;
-                        }
-                        return null;
-                    }
-                };
-        panel.setLayout(new BorderLayout());
-        panel.add(table1, BorderLayout.CENTER);
-        panel.add(new JScrollPane(table1));
-        panel.add(table1.getTableHeader(), BorderLayout.NORTH);
-        table1.setAutoCreateRowSorter(true);
-        table1.setModel(dataModelGV);
-    }
-
+    //Hàm init ban đầu
     public static void init(Accounts account) {
         acc = account;
         JFrame frame = new JFrame("trangChu");
@@ -332,10 +223,10 @@ public class trangChu {
         frame.setVisible(true);
     }
 
-    //Update thong tin ca nhan
-    public void update() {
-        acc = AccountDAO.getAccount(acc.getfMaTk());
-
+    //------------------------Các hàm init------------------------------------------------------------------------------
+    //Hàm init Trang chủ + Thông tin cá nhân
+    public void initALL() {
+        //set text cho thong tin ca nhan
         lbName.setText(acc.getfTaiKhoan());
         tfDC.setText(acc.getfDiaChi());
         tfDT.setText(acc.getfDienThoai());
@@ -343,18 +234,49 @@ public class trangChu {
         tfNS.setText("" + acc.getfNgaySinh());
         tfTen.setText(acc.getfHoTen());
         tfMK.setText(acc.getfPass());
-        System.out.println("đã vô đây");
+        //main menu
+        menuLabels[0] = lbThongTin;
+        menuLabels[1] = lbGiaoVu;
+        menuLabels[2] = lbSV;
+        menuLabels[3] = lbMH;
+        menuLabels[4] = lbHK;
+        menuLabels[5] = lbLH;
+        menuLabels[6] = lbQLHP;
+        menuLabels[7] = lbDKHP;
+        menuLabels[8] = lbSV_HP;
+        //main panel
+        menuPanels[0] = jpThongTin;
+        menuPanels[1] = jpGiaoVu;
+        menuPanels[2] = jpSV;
+        menuPanels[3] = jpMonHoc;
+        menuPanels[4] = jpHK;
+        menuPanels[5] = jpLopHoc;
+        menuPanels[6] = jpHP;
+        menuPanels[7] = jpDKHP;
+        menuPanels[8] = jpSVHP;
     }
 
-    //show panel khi click chon label tuong ung
-    public void showPAnel(JPanel jPanel) {
-        for (JPanel jp : menuPanels) {
-            jp.setVisible(false);
-        }
-        jPanel.setVisible(true);
+    //init Giáo vụ
+    public void initGiaoVu() {
+        showTableGiaoVu();
 
+        addActionToMenuLabels();
+        showPAnel(jpThongTin);
+        //add radio button
+        ButtonGroup bggv = new ButtonGroup();
+        bggv.add(raBtnNamgv);
+        bggv.add(raBtnNugv);
+
+        ButtonGroup loaiGv = new ButtonGroup();
+        loaiGv.add(raBtnAdmin);
+        loaiGv.add(raBtnGv);
+        //add JDateChooser
+        dateChooserGv = new JDateChooser(today.getTime());
+        dateChooserGv.setDateFormatString("yyyy-MM-dd");
+        pnNgaySinhGV.add(dateChooserGv);
     }
 
+    //------------------------Các hàm và menu Panel---------------------------------------------------------------------
     public void addActionToMenuLabels() {
         Component[] components = jpanelQl.getComponents();
         for (Component component : components) {
@@ -430,6 +352,16 @@ public class trangChu {
         label.setForeground(Color.WHITE);
     }
 
+    //show panel khi click chon label tuong ung
+    public void showPAnel(JPanel jPanel) {
+        for (JPanel jp : menuPanels) {
+            jp.setVisible(false);
+        }
+        jPanel.setVisible(true);
+
+    }
+
+    //------------------------Các hàm chung-----------------------------------------------------------------------------
     private boolean showDialog() {
         int dialogResult = JOptionPane.showConfirmDialog(null,
                 "!!! Hành động này sẽ lưu thông tin xuống CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -446,6 +378,94 @@ public class trangChu {
         JOptionPane.showMessageDialog(null, str);
     }
 
+    //------------------------Các hàm cho panel Thông tin cá nhân-------------------------------------------------------
+    //Update thong tin ca nhan
+    public void update() {
+        acc = AccountDAO.getAccount(acc.getfMaTk());
+
+        lbName.setText(acc.getfTaiKhoan());
+        tfDC.setText(acc.getfDiaChi());
+        tfDT.setText(acc.getfDienThoai());
+        tfGT.setText(acc.getfGioiTinh());
+        tfNS.setText("" + acc.getfNgaySinh());
+        tfTen.setText(acc.getfHoTen());
+        tfMK.setText(acc.getfPass());
+        System.out.println("đã vô đây");
+    }
+
+    //------------------------Các hàm cho quản lý giáo vụ---------------------------------------------------------------
+    //show table giáo vụ
+    public void showTableGiaoVu() {
+        String[] columnsGV = new String[]{"STT", "Tài khoản", "Mật khẩu", "Họ tên", "Ngày sinh", "Địa chỉ", "SDT", "Giới tính", "Loại"};
+        TableModel dataModelGV = new
+                AbstractTableModel() {
+                    List<Accounts> rsGVrsGV = AccountDAO.getAllAccountsGV();
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsGV[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 9;
+                    }
+
+                    public int getRowCount() {
+                        return rsGVrsGV.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Accounts si = rsGVrsGV.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfMaTk();
+                            case 1:
+                                return si.getfTaiKhoan();
+                            case 2:
+                                return si.getfPass();
+                            case 3:
+                                return si.getfHoTen();
+                            case 4:
+                                return si.getfNgaySinh();
+                            case 5:
+                                return si.getfDiaChi();
+                            case 6:
+                                return si.getfDienThoai();
+                            case 7:
+                                return si.getfGioiTinh();
+                            case 8:
+                                return si.getfType();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                            case 8:
+                                return Integer.class;
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 5:
+                            case 6:
+                            case 7:
+                                return String.class;
+                            case 4:
+                                return Date.class;
+                        }
+                        return null;
+                    }
+                };
+        panel.setLayout(new BorderLayout());
+        panel.add(table1, BorderLayout.CENTER);
+        panel.add(new JScrollPane(table1));
+        panel.add(table1.getTableHeader(), BorderLayout.NORTH);
+        table1.setAutoCreateRowSorter(true);
+        table1.setModel(dataModelGV);
+    }
+
+    //reset txt giáo vụ
     public void resetTxt() {
         tMkgv.setText("");
         tDcgv.setText("");
@@ -457,6 +477,8 @@ public class trangChu {
         raBtnNugv.setSelected(false);
         raBtnNamgv.setSelected(false);
     }
+
+    //------------------------Các hàm cho quản lý sinh viên-------------------------------------------------------------
 
 
 }
