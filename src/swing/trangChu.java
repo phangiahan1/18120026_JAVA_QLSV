@@ -133,6 +133,12 @@ public class trangChu {
     private Accounts selectedAcc;
     private int selectedIndex;
     private JButton btnSetHKHT;
+    private JTable tableLopHoc;
+    private JPanel panelLH;
+    private JTextField tTenLop;
+    private JButton btnResetLop;
+    private JButton btnAddLop;
+    private JButton btnDeleteLop;
     //cho bang môn học
     private Subjects selectedSub;
     private int selectedIndexSub;
@@ -1007,5 +1013,12 @@ public class trangChu {
         panelHK.add(tableHK.getTableHeader(), BorderLayout.NORTH);
         tableHK.setAutoCreateRowSorter(true);
         tableHK.setModel(dataModelHK);
+    }
+
+    //------------------------Các hàm cho quản lý Lop Học----------------------------------------------------------------
+    //show table học kì
+    public void showTableLop() {
+        String[] columnsLop = new String[]{"STT", "Tên HK", "Năm học", "Ngày bắt đầu", "Ngày kết thúc", "Học kì hiện tại"};
+
     }
 }

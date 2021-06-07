@@ -29,6 +29,7 @@ public class ClassStudent {
         return fMaCS == that.fMaCS;
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(fMaCS);
