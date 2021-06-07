@@ -29,6 +29,9 @@
         <mapping class="hibernate.Semester"/>
         <mapping resource="Subjects.hbm.xml"/>
         <mapping class="hibernate.Subjects"/>
+
+        <mapping resource="StudentDkhp.hbm.xml"/>
+        <mapping class="hibernate.StudentDkhp"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 

@@ -127,22 +127,6 @@ public class AccountDAO {
     }
 
     public static boolean isExistedAcc(Accounts accounts) {
-//        Session session = HibernateUtil.getSessionFactory().openSession();
-//        List<Accounts> list = AccountDAO.getAllAccounts();
-//        boolean kq = true;
-//        try {
-//            for(Accounts accounts1:list){
-//                if (accounts.equals(accounts1))
-//                    return false;
-//            }
-//        } catch (HibernateException ex) {
-//            System.err.println(ex);
-//            kq = false;
-//        } finally {
-//            session.close();
-//        }
-//        return kq;
-        //open session
         boolean kq = false;
         List<Accounts> list = AccountDAO.getAllAccounts();
         for (Accounts accounts1 : list) {
@@ -151,9 +135,6 @@ public class AccountDAO {
             }
         }
         return kq;
-
-//
-
     }
 
     public static boolean saveAccount(Accounts accounts) {

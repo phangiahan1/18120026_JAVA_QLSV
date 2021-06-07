@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Semester {
     private int fMaHk;
     private String fTenHk;
-    private int fNamHoc;
+    private String fNamHoc;
     private Date fNgayBd;
     private Date fNgayKt;
     private Integer fHKhienTai;
@@ -37,12 +37,12 @@ public class Semester {
     }
 
     @Basic
-    @Column(name = "f_namHoc", nullable = false)
-    public int getfNamHoc() {
+    @Column(name = "f_namHoc", nullable = false, length = 15)
+    public String getfNamHoc() {
         return fNamHoc;
     }
 
-    public void setfNamHoc(int fNamHoc) {
+    public void setfNamHoc(String fNamHoc) {
         this.fNamHoc = fNamHoc;
     }
 
@@ -85,7 +85,20 @@ public class Semester {
     }
 
     @Override
+    public String toString() {
+        return "Semester{" +
+                "fMaHk=" + fMaHk +
+                ", fTenHk='" + fTenHk + '\'' +
+                ", fNamHoc='" + fNamHoc + '\'' +
+                ", fNgayBd=" + fNgayBd +
+                ", fNgayKt=" + fNgayKt +
+                ", fHKhienTai=" + fHKhienTai +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(fMaHk, fTenHk, fNamHoc, fNgayBd, fNgayKt, fHKhienTai);
     }
+
 }

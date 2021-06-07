@@ -8,6 +8,9 @@
         <id name="fMaMh">
             <column name="f_maMH" sql-type="int(11)"/>
         </id>
+        <property name="fidMh">
+            <column name="f_idMH" sql-type="varchar(255)"/>
+        </property>
         <property name="fTenMh">
             <column name="f_tenMH" sql-type="varchar(255)"/>
         </property>

@@ -2,7 +2,11 @@ package swing;
 
 import com.toedter.calendar.JDateChooser;
 import dao.AccountDAO;
+import dao.SemesterDAO;
+import dao.SubjectDAO;
 import hibernate.Accounts;
+import hibernate.Semester;
+import hibernate.Subjects;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -25,6 +29,10 @@ public class trangChu {
     //datechosser gv
     JDateChooser dateChooserGv;
     Calendar today = Calendar.getInstance();
+
+    //datechooser hk
+    JDateChooser dateChooserBD;
+    JDateChooser dateChooserKT;
     //create array of jLabel
     JLabel[] menuLabels = new JLabel[9];
     //creat array of jPanel
@@ -71,7 +79,7 @@ public class trangChu {
     private JPanel jpDKHP;
     private JPanel jpSVHP;
     private JPanel jpSearchGiaoVu;
-    private JTable table1;
+    ButtonGroup bgmh = new ButtonGroup();
     private JPanel panel;
     private JPasswordField tMkagv;
     private JRadioButton raBtnNamgv;
@@ -89,25 +97,124 @@ public class trangChu {
     private JTextField tTaiKhoanGv;
     private JRadioButton raBtnAdmin;
     private JRadioButton raBtnGv;
+    private JTable tableGiaoVu;
+    private JTable tableMonhoc;
+    private JPanel jpSearchMonhoc;
+    private JPanel panelMonhoc;
+    private JRadioButton a1RadioButton;
+    private JRadioButton a2RadioButton;
+    private JRadioButton a6RadioButton;
+    private JRadioButton a5RadioButton;
+    private JRadioButton a4RadioButton;
+    private JRadioButton a3RadioButton;
+    private JButton btnResetMH;
+    private JButton btnEditMH;
+    private JButton btnSaveMH;
+    private JButton btnDeleteMH;
+    private JTextField tMaMH;
+    private JTextField tTenMH;
+    private JLabel lMaMH;
+    private JLabel lTenMH;
+    private JLabel lbSTTMH;
+    private JPanel panelMH;
+    private JPanel ngayBDHK;
+    private JPanel ngayKTHK;
+    private JRadioButton HK1RadioButton;
+    private JRadioButton HK2RadioButton;
+    private JRadioButton HK3RadioButton;
+    private JTable tableHK;
+    private JPanel panelHK;
+    private JTextField tNamHK;
+    private JButton btnAddHK;
+    private JButton btnEditHK;
+    private JButton btnDeleteHK;
     private javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
     //cho bang giao vu
     private Accounts selectedAcc;
     private int selectedIndex;
+    private JButton btnSetHKHT;
+    //cho bang môn học
+    private Subjects selectedSub;
+    private int selectedIndexSub;
+    //cho bang môn học
+    private Semester selectedSem;
+    private int selectedIndexSem;
 
     public trangChu() {
         //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
         initALL();
         //btn Thông tin cá nhân
-        btnEditThongTin.addActionListener(e -> editThongTinCaNhan.init(acc));
-        btnReTT.addActionListener(e -> update());
+        btnEditThongTin.addActionListener(e -> {
+            editThongTinCaNhan.init(acc);
+
+        });
+        btnReTT.addActionListener(e -> {
+            update();
+            panel.removeAll();
+            showTableGiaoVu();
+        });
 
         //Khởi tạo dữ liệu cho bảng giáo vụ
         initGiaoVu();
-        //btn Giáo vụ
+        tableGiaoVu.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableGiaoVu.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Accounts> rsGV1 = AccountDAO.getAllAccountsGV();
+                selectedIndex = tableGiaoVu.convertRowIndexToModel(tableGiaoVu.getSelectedRow());
+                selectedAcc = rsGV1.get(selectedIndex);
+                if (selectedAcc != null) {
+                    tTaiKhoanGv.setText(selectedAcc.getfTaiKhoan());
+                    tTenGV.setText(selectedAcc.getfHoTen());
+                    tMkgv.setText(selectedAcc.getfPass());
+                    tDtgv.setText(selectedAcc.getfDienThoai());
+                    tDcgv.setText(selectedAcc.getfDiaChi());
+                    if (selectedAcc.getfGioiTinh().equals("Nam")) {
+                        raBtnNamgv.setSelected(true);
+                        raBtnNugv.setSelected(false);
+                    } else {
+                        raBtnNugv.setSelected(true);
+                        raBtnNamgv.setSelected(false);
+                    }
+                    if (selectedAcc.getfType() == 1) {
+                        raBtnAdmin.setSelected(true);
+                        raBtnGv.setSelected(false);
+                    } else {
+                        raBtnGv.setSelected(true);
+                        raBtnAdmin.setSelected(false);
+                    }
+                    dateChooserGv.setDate(selectedAcc.getfNgaySinh());
+                }
+            }
+        });
+        ////btn Giáo vụ
         btnEditGV.addActionListener(e -> {
             java.util.List<Accounts> rsGV2 = AccountDAO.getAllAccountsGV();
-            selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
+            selectedIndex = tableGiaoVu.convertRowIndexToModel(tableGiaoVu.getSelectedRow());
             selectedAcc = rsGV2.get(selectedIndex);
+            if (tTenGV.getText().equals("") || String.valueOf(tMkgv.getPassword()).equals("") || tTaiKhoanGv.getText().equals("")) {
+                showDialogAgain("Cần nhập đầy đủ: Tài khoản, Mật khẩu, Loại");
+            } else {
+                selectedAcc.setfPass(String.valueOf(tMkgv.getPassword()));
+                selectedAcc.setfDienThoai(tDtgv.getText());
+                selectedAcc.setfDiaChi(tDcgv.getText());
+                selectedAcc.setfHoTen(tTenGV.getText());
+                selectedAcc.setfTaiKhoan(tTaiKhoanGv.getText());
+                java.util.Date utilDate = dateChooserGv.getDate();
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                selectedAcc.setfNgaySinh(sqlDate);
+                if (raBtnNamgv.isSelected()) {
+                    selectedAcc.setfGioiTinh("Nam");
+                }
+                if (raBtnNugv.isSelected()) {
+                    selectedAcc.setfGioiTinh("Nữ");
+                }
+                if (raBtnAdmin.isSelected()) {
+                    selectedAcc.setfType(1);
+                }
+                if (raBtnGv.isSelected()) {
+                    selectedAcc.setfType(2);
+                }
+            }
+
             if (showDialog()) {
                 AccountDAO.updateAccount(selectedAcc);
                 showDialogAgain("Edit thành công!!!");
@@ -166,50 +273,309 @@ public class trangChu {
         });
         btnDeleteGV.addActionListener(e -> {
             java.util.List<Accounts> rsGV1 = AccountDAO.getAllAccountsGV();
-            selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
+            selectedIndex = tableGiaoVu.convertRowIndexToModel(tableGiaoVu.getSelectedRow());
             selectedAcc = rsGV1.get(selectedIndex);
-            if (showDialogDelete()) {
-                AccountDAO.deleteAccount(selectedAcc);
-                showDialogAgain("Xóa thành công!!!");
-                panel.removeAll();
-                showTableGiaoVu();
-                resetTxt();
+
+            if (!AccountDAO.isExistedAcc(selectedAcc)) {
+                showDialogAgain("Tài khoản không tồn tại!!!");
             } else {
-                showDialogAgain("Xóa không hoàn thành!!!");
-                resetTxt();
-            }
-        });
-        table1.getSelectionModel().addListSelectionListener(e -> {
-            if (!table1.getSelectionModel().isSelectionEmpty()) {
-                java.util.List<Accounts> rsGV1 = AccountDAO.getAllAccountsGV();
-                selectedIndex = table1.convertRowIndexToModel(table1.getSelectedRow());
-                selectedAcc = rsGV1.get(selectedIndex);
-                if (selectedAcc != null) {
-                    tTaiKhoanGv.setText(selectedAcc.getfTaiKhoan());
-                    tTenGV.setText(selectedAcc.getfHoTen());
-                    tMkgv.setText(selectedAcc.getfPass());
-                    tDtgv.setText(selectedAcc.getfDienThoai());
-                    tDcgv.setText(selectedAcc.getfDiaChi());
-                    if (selectedAcc.getfGioiTinh().equals("Nam")) {
-                        raBtnNamgv.setSelected(true);
-                        raBtnNugv.setSelected(false);
-                    } else {
-                        raBtnNugv.setSelected(true);
-                        raBtnNamgv.setSelected(false);
-                    }
-                    if (selectedAcc.getfType() == 1) {
-                        raBtnAdmin.setSelected(true);
-                        raBtnGv.setSelected(false);
-                    } else {
-                        raBtnGv.setSelected(true);
-                        raBtnAdmin.setSelected(false);
-                    }
-                    dateChooserGv.setDate(selectedAcc.getfNgaySinh());
+                if (showDialogDelete()) {
+                    AccountDAO.deleteAccount(selectedAcc);
+                    showDialogAgain("Xóa thành công!!!");
+                    panel.removeAll();
+                    showTableGiaoVu();
+                    resetTxt();
+                } else {
+                    showDialogAgain("Xóa không hoàn thành!!!");
+                    resetTxt();
                 }
             }
         });
 
         //Khởi tạo dữ liệu cho bảng sinh viên
+
+        //Khởi tạo dữ liệu cho bảng môn học
+        initMonHoc();
+        tableMonhoc.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableMonhoc.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Subjects> rsMH = SubjectDAO.getAllSubjects();
+                selectedIndexSub = tableMonhoc.convertRowIndexToModel(tableMonhoc.getSelectedRow());
+                selectedSub = rsMH.get(selectedIndexSub);
+                if (selectedSub != null) {
+                    tMaMH.setText(selectedSub.getFidMh());
+                    tTenMH.setText(selectedSub.getfTenMh());
+                    if (selectedSub.getfSoTinChi() == 1) {
+                        a1RadioButton.setSelected(true);
+                    }
+                    if (selectedSub.getfSoTinChi() == 2) {
+                        a2RadioButton.setSelected(true);
+                    }
+                    if (selectedSub.getfSoTinChi() == 3) {
+                        a3RadioButton.setSelected(true);
+                    }
+                    if (selectedSub.getfSoTinChi() == 4) {
+                        a4RadioButton.setSelected(true);
+                    }
+                    if (selectedSub.getfSoTinChi() == 5) {
+                        a5RadioButton.setSelected(true);
+                    }
+                    if (selectedSub.getfSoTinChi() == 6) {
+                        a6RadioButton.setSelected(true);
+                    }
+                }
+            }
+        });
+        ////btn Môn học
+        btnResetMH.addActionListener(e -> {
+            tTenMH.setText("");
+            tMaMH.setText("");
+        });
+        btnSaveMH.addActionListener(e -> {
+            Subjects newSub = new Subjects();
+
+            newSub.setFidMh(tMaMH.getText());
+            newSub.setfTenMh(tTenMH.getText());
+            if (a1RadioButton.isSelected()) {
+                newSub.setfSoTinChi(1);
+            }
+            if (a2RadioButton.isSelected()) {
+                newSub.setfSoTinChi(2);
+            }
+            if (a3RadioButton.isSelected()) {
+                newSub.setfSoTinChi(3);
+            }
+            if (a4RadioButton.isSelected()) {
+                newSub.setfSoTinChi(4);
+            }
+            if (a5RadioButton.isSelected()) {
+                newSub.setfSoTinChi(5);
+            }
+            if (a6RadioButton.isSelected()) {
+                newSub.setfSoTinChi(6);
+            }
+            if (tMaMH.getText().equals("") || tTenMH.getText().equals("")) {
+                showDialogAgain("Cần nhập đầy đủ: MÃ môn học, Tên môn học, Số tín chỉ");
+            } else {
+                if (SubjectDAO.isExistedSub(newSub)) {
+                    showDialogAgain("Môn học đã tồn tại!!!");
+                    tTenMH.setText("");
+                    tMaMH.setText("");
+                } else {
+                    if (showDialog()) {
+                        SubjectDAO.saveSub(newSub);
+                        showDialogAgain("Lưu thành công!!!");
+                        panelMH.removeAll();
+                        showTableMonHoc();
+                        tTenMH.setText("");
+                        tMaMH.setText("");
+                    } else {
+                        showDialogAgain("Lưu không thành công!!!");
+                        tTenMH.setText("");
+                        tMaMH.setText("");
+                    }
+                }
+            }
+        });
+        btnDeleteMH.addActionListener(e -> {
+            java.util.List<Subjects> rsSU1 = SubjectDAO.getAllSubjects();
+            selectedIndexSub = tableMonhoc.convertRowIndexToModel(tableMonhoc.getSelectedRow());
+            selectedSub = rsSU1.get(selectedIndexSub);
+
+            if (!SubjectDAO.isExistedSub(selectedSub)) {
+                showDialogAgain("Tài khoản không tồn tại!!!");
+            } else {
+                if (showDialogDelete()) {
+                    SubjectDAO.deleteSub(selectedSub);
+                    showDialogAgain("Xóa thành công!!!");
+                    panelMH.removeAll();
+                    showTableMonHoc();
+                    tTenMH.setText("");
+                    tMaMH.setText("");
+                } else {
+                    showDialogAgain("Xóa không hoàn thành!!!");
+                    tTenMH.setText("");
+                    tMaMH.setText("");
+                }
+            }
+        });
+        btnEditMH.addActionListener(e -> {
+            java.util.List<Subjects> rsSU1 = SubjectDAO.getAllSubjects();
+            selectedIndexSub = tableMonhoc.convertRowIndexToModel(tableMonhoc.getSelectedRow());
+            selectedSub = rsSU1.get(selectedIndexSub);
+
+            if (tMaMH.getText().equals("") || tTenMH.getText().equals("")) {
+                showDialogAgain("Vui lòng điền đầy đủ dữ liệu");
+            } else {
+                selectedSub.setFidMh(tMaMH.getText());
+                selectedSub.setfTenMh(tTenMH.getText());
+                if (a1RadioButton.isSelected()) {
+                    selectedSub.setfSoTinChi(1);
+                }
+                if (a2RadioButton.isSelected()) {
+                    selectedSub.setfSoTinChi(2);
+                }
+                if (a3RadioButton.isSelected()) {
+                    selectedSub.setfSoTinChi(3);
+                }
+                if (a4RadioButton.isSelected()) {
+                    selectedSub.setfSoTinChi(4);
+                }
+                if (a5RadioButton.isSelected()) {
+                    selectedSub.setfSoTinChi(5);
+                }
+                if (a6RadioButton.isSelected()) {
+                    selectedSub.setfSoTinChi(6);
+                }
+
+                if (showDialog()) {
+                    SubjectDAO.updateSub(selectedSub);
+                    showDialogAgain("Edit thành công!!!");
+                    panelMH.removeAll();
+                    showTableMonHoc();
+                    tTenMH.setText("");
+                    tMaMH.setText("");
+                } else {
+                    showDialogAgain("Edit không hoàn thành!!!");
+                    tTenMH.setText("");
+                    tMaMH.setText("");
+                }
+            }
+
+
+        });
+
+        //Khởi tạo dữ liệu học kì
+        initHocKi();
+        tableHK.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableHK.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Semester> rsHK = SemesterDAO.getAllSemester();
+                selectedIndexSem = tableHK.convertRowIndexToModel(tableHK.getSelectedRow());
+                selectedSem = rsHK.get(selectedIndexSem);
+                if (selectedSem != null) {
+                    tNamHK.setText(selectedSem.getfNamHoc());
+                    if (selectedSem.getfTenHk().equals("HK1")) {
+                        HK1RadioButton.setSelected(true);
+                    }
+                    if (selectedSem.getfTenHk().equals("HK2")) {
+                        HK2RadioButton.setSelected(true);
+                    }
+                    if (selectedSem.getfTenHk().equals("HK3")) {
+                        HK3RadioButton.setSelected(true);
+                    }
+                    dateChooserBD.setDate(selectedSem.getfNgayBd());
+                    dateChooserKT.setDate(selectedSem.getfNgayKt());
+                }
+            }
+        });
+        btnSetHKHT.addActionListener(e -> {
+            java.util.List<Semester> rsHK = SemesterDAO.getAllSemester();
+            selectedIndexSem = tableHK.convertRowIndexToModel(tableHK.getSelectedRow());
+            selectedSem = rsHK.get(selectedIndexSem);
+
+            if (SemesterDAO.findHocKiHienTai().equals(selectedSem)) {
+                showDialogAgain("Học kì đã là học kì hiện tại");
+                tNamHK.setText("");
+            } else {
+                if (showDialogSetHocKi()) {
+                    SemesterDAO.setHocKiHienTai(selectedSem);
+                    showDialogAgain("Set học kì hiện tại thành công");
+                    panelHK.removeAll();
+                    showTableHocKi();
+                    tNamHK.setText("");
+                } else {
+                    showDialogAgain("Set học kì hiện tại không thành công");
+                    tNamHK.setText("");
+                }
+            }
+        });
+        btnEditHK.addActionListener(e -> {
+            java.util.List<Semester> rsHK1 = SemesterDAO.getAllSemester();
+            selectedIndexSem = tableHK.convertRowIndexToModel(tableHK.getSelectedRow());
+            selectedSem = rsHK1.get(selectedIndexSem);
+
+            if (tNamHK.getText().equals("")) {
+                showDialogAgain("Vui lòng điền đầy đủ dữ liệu");
+            } else {
+                selectedSem.setfNamHoc(tNamHK.getText());
+                java.util.Date dateBD = dateChooserBD.getDate();
+                java.sql.Date sqlDateBD = new java.sql.Date(dateBD.getTime());
+                selectedSem.setfNgayBd(sqlDateBD);
+                java.util.Date dateKT = dateChooserKT.getDate();
+                java.sql.Date sqlDateKT = new java.sql.Date(dateKT.getTime());
+                selectedSem.setfNgayKt(sqlDateKT);
+                if (HK1RadioButton.isSelected()) {
+                    selectedSem.setfTenHk("HK1");
+                }
+                if (HK2RadioButton.isSelected()) {
+                    selectedSem.setfTenHk("HK2");
+                }
+                if (HK3RadioButton.isSelected()) {
+                    selectedSem.setfTenHk("HK3");
+                }
+
+                if (showDialog()) {
+                    SemesterDAO.updateSemester(selectedSem);
+                    panelHK.removeAll();
+                    showTableHocKi();
+                    tNamHK.setText("");
+                } else {
+                    showDialogAgain("Chỉnh sửa không thành công");
+                    tNamHK.setText("");
+                }
+            }
+        });
+        btnAddHK.addActionListener(e -> {
+            Semester semester = new Semester();
+            semester.setfNamHoc(tNamHK.getText());
+            java.util.Date dateBD = dateChooserBD.getDate();
+            java.sql.Date sqlDateBD = new java.sql.Date(dateBD.getTime());
+            semester.setfNgayBd(sqlDateBD);
+            java.util.Date dateKT = dateChooserKT.getDate();
+            java.sql.Date sqlDateKT = new java.sql.Date(dateKT.getTime());
+            semester.setfNgayKt(sqlDateKT);
+            semester.setfHKhienTai(0);
+            if (HK1RadioButton.isSelected()) {
+                semester.setfTenHk("HK1");
+            }
+            if (HK2RadioButton.isSelected()) {
+                semester.setfTenHk("HK2");
+            }
+            if (HK3RadioButton.isSelected()) {
+                semester.setfTenHk("HK3");
+            }
+
+            if (tNamHK.getText().equals("")) {
+                showDialogAgain("Vui lòng điền đầy đủ thông tin");
+            } else {
+                if (showDialog()) {
+                    if (SemesterDAO.saveSem(semester)) {
+                        showDialogAgain("Lưu học kì thành công");
+                        panelHK.removeAll();
+                        showTableHocKi();
+                        tNamHK.setText("");
+                    } else {
+                        showDialogAgain("Lưu không thành công");
+                    }
+                } else {
+                    showDialogAgain("Lưu không thành công");
+                }
+            }
+        });
+        btnDeleteHK.addActionListener(e -> {
+            java.util.List<Semester> rsHK2 = SemesterDAO.getAllSemester();
+            selectedIndexSem = tableHK.convertRowIndexToModel(tableHK.getSelectedRow());
+            selectedSem = rsHK2.get(selectedIndexSem);
+
+            if (showDialogDelete()) {
+                SemesterDAO.deleteSem(selectedSem);
+                showDialogAgain("Xóa thành công");
+                panelHK.removeAll();
+                showTableHocKi();
+                tNamHK.setText("");
+            } else {
+                showDialogAgain("Xóa không thành công");
+            }
+        });
     }
 
     //Hàm init ban đầu
@@ -270,10 +636,47 @@ public class trangChu {
         ButtonGroup loaiGv = new ButtonGroup();
         loaiGv.add(raBtnAdmin);
         loaiGv.add(raBtnGv);
+
+        raBtnAdmin.setSelected(true);
+        raBtnNamgv.setSelected(true);
+
         //add JDateChooser
         dateChooserGv = new JDateChooser(today.getTime());
         dateChooserGv.setDateFormatString("yyyy-MM-dd");
         pnNgaySinhGV.add(dateChooserGv);
+    }
+
+    //init Giáo vụ
+    public void initMonHoc() {
+        showTableMonHoc();
+        //add radio button
+        bgmh.add(a1RadioButton);
+        bgmh.add(a2RadioButton);
+        bgmh.add(a3RadioButton);
+        bgmh.add(a4RadioButton);
+        bgmh.add(a5RadioButton);
+        bgmh.add(a6RadioButton);
+
+        a1RadioButton.setSelected(true);
+    }
+
+    //init Học kì
+    public void initHocKi() {
+        showTableHocKi();
+        ButtonGroup bghk = new ButtonGroup();
+        //add radio button
+        bghk.add(HK1RadioButton);
+        bghk.add(HK2RadioButton);
+        bghk.add(HK3RadioButton);
+
+        HK1RadioButton.setSelected(true);
+
+        dateChooserBD = new JDateChooser(today.getTime());
+        dateChooserKT = new JDateChooser(today.getTime());
+        dateChooserBD.setDateFormatString("yyyy-MM-dd");
+        dateChooserKT.setDateFormatString("yyyy-MM-dd");
+        ngayBDHK.add(dateChooserBD);
+        ngayKTHK.add(dateChooserKT);
     }
 
     //------------------------Các hàm và menu Panel---------------------------------------------------------------------
@@ -374,6 +777,12 @@ public class trangChu {
         return dialogResult == JOptionPane.YES_OPTION;
     }
 
+    private boolean showDialogSetHocKi() {
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "!!! Học kì sẽ được mặc định là học kì hiện tại !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
+    }
+
     private void showDialogAgain(String str) {
         JOptionPane.showMessageDialog(null, str);
     }
@@ -458,11 +867,11 @@ public class trangChu {
                     }
                 };
         panel.setLayout(new BorderLayout());
-        panel.add(table1, BorderLayout.CENTER);
-        panel.add(new JScrollPane(table1));
-        panel.add(table1.getTableHeader(), BorderLayout.NORTH);
-        table1.setAutoCreateRowSorter(true);
-        table1.setModel(dataModelGV);
+        panel.add(tableGiaoVu, BorderLayout.CENTER);
+        panel.add(new JScrollPane(tableGiaoVu));
+        panel.add(tableGiaoVu.getTableHeader(), BorderLayout.NORTH);
+        tableGiaoVu.setAutoCreateRowSorter(true);
+        tableGiaoVu.setModel(dataModelGV);
     }
 
     //reset txt giáo vụ
@@ -481,4 +890,122 @@ public class trangChu {
     //------------------------Các hàm cho quản lý sinh viên-------------------------------------------------------------
 
 
+    //------------------------Các hàm cho quản lý Môn học---------------------------------------------------------------
+    //show table giáo vụ
+    public void showTableMonHoc() {
+        String[] columnsMH = new String[]{"STT", "Mã môn", "Tên môn", "Số tín chỉ"};
+        TableModel dataModelMH = new
+                AbstractTableModel() {
+                    List<Subjects> listMH = SubjectDAO.getAllSubjects();
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsMH[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 4;
+                    }
+
+                    public int getRowCount() {
+                        return listMH.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Subjects si = listMH.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfMaMh();
+                            case 1:
+                                return si.getFidMh();
+                            case 2:
+                                return si.getfTenMh();
+                            case 3:
+                                return si.getfSoTinChi();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                            case 3:
+                                return Integer.class;
+                            case 1:
+                            case 2:
+                                return String.class;
+                        }
+                        return null;
+                    }
+                };
+        panelMH.setLayout(new BorderLayout());
+        panelMH.add(tableMonhoc, BorderLayout.CENTER);
+        panelMH.add(new JScrollPane(tableMonhoc));
+        panelMH.add(tableMonhoc.getTableHeader(), BorderLayout.NORTH);
+        tableMonhoc.setAutoCreateRowSorter(true);
+        tableMonhoc.setModel(dataModelMH);
+    }
+
+    //------------------------Các hàm cho quản lý Học kì----------------------------------------------------------------
+    //show table học kì
+    public void showTableHocKi() {
+        String[] columnsHK = new String[]{"STT", "Tên HK", "Năm học", "Ngày bắt đầu", "Ngày kết thúc", "Học kì hiện tại"};
+        TableModel dataModelHK = new
+                AbstractTableModel() {
+                    List<Semester> listHK = SemesterDAO.getAllSemester();
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsHK[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 6;
+                    }
+
+                    public int getRowCount() {
+                        return listHK.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Semester si = listHK.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfMaHk();
+                            case 1:
+                                return si.getfTenHk();
+                            case 2:
+                                return si.getfNamHoc();
+                            case 3:
+                                return si.getfNgayBd();
+                            case 4:
+                                return si.getfNgayKt();
+                            case 5:
+                                return si.getfHKhienTai();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                            case 5:
+                                return Integer.class;
+                            case 1:
+                            case 2:
+                                return String.class;
+                            case 3:
+                            case 4:
+                                return Date.class;
+                        }
+                        return null;
+                    }
+                };
+        panelHK.setLayout(new BorderLayout());
+        panelHK.add(tableHK, BorderLayout.CENTER);
+        panelHK.add(new JScrollPane(tableHK));
+        panelHK.add(tableHK.getTableHeader(), BorderLayout.NORTH);
+        tableHK.setAutoCreateRowSorter(true);
+        tableHK.setModel(dataModelHK);
+    }
 }

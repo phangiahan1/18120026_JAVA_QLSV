@@ -9,8 +9,12 @@ import java.util.Objects;
 @Entity
 public class Subjects {
     private int fMaMh;
+    private String fidMh;
+
+
     private String fTenMh;
     private int fSoTinChi;
+
 
     @Id
     @Column(name = "f_maMH", nullable = false)
@@ -20,6 +24,16 @@ public class Subjects {
 
     public void setfMaMh(int fMaMh) {
         this.fMaMh = fMaMh;
+    }
+
+    @Basic
+    @Column(name = "f_idMH", nullable = false, length = 255)
+    public String getFidMh() {
+        return fidMh;
+    }
+
+    public void setFidMh(String fidMh) {
+        this.fidMh = fidMh;
     }
 
     @Basic
@@ -47,11 +61,11 @@ public class Subjects {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Subjects subjects = (Subjects) o;
-        return fMaMh == subjects.fMaMh && fSoTinChi == subjects.fSoTinChi && Objects.equals(fTenMh, subjects.fTenMh);
+        return fMaMh == subjects.fMaMh && fidMh == subjects.fidMh && fSoTinChi == subjects.fSoTinChi && Objects.equals(fTenMh, subjects.fTenMh);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fMaMh, fTenMh, fSoTinChi);
+        return Objects.hash(fMaMh, fidMh, fTenMh, fSoTinChi);
     }
 }

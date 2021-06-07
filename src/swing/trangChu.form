@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="826" height="1199"/>
+      <xy x="20" y="20" width="1057" height="1591"/>
     </constraints>
     <properties>
       <background color="-1180673"/>
@@ -239,7 +239,7 @@
                         </properties>
                         <border type="none"/>
                         <children>
-                          <component id="dbc79" class="javax.swing.JTable" binding="table1" default-binding="true">
+                          <component id="dbc79" class="javax.swing.JTable" binding="tableGiaoVu">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                                 <preferred-size width="150" height="50"/>
@@ -419,6 +419,7 @@
                             <properties>
                               <background color="-11447983"/>
                               <enabled value="false"/>
+                              <font size="16" style="0"/>
                             </properties>
                             <border type="none"/>
                             <children/>
@@ -498,14 +499,14 @@
                               <background color="-11447983"/>
                               <font size="18" style="1"/>
                               <foreground color="-1180673"/>
-                              <text value="Save"/>
+                              <text value="Add"/>
                             </properties>
                           </component>
                         </children>
                       </grid>
                     </children>
                   </grid>
-                  <grid id="f33ef" binding="jpMonHoc" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="f33ef" binding="jpMonHoc" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -515,9 +516,198 @@
                       <foreground color="-16777216"/>
                     </properties>
                     <border type="none" title="Quản lý môn học"/>
-                    <children/>
+                    <children>
+                      <grid id="a341e" binding="jpSearchMonhoc" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </grid>
+                      <grid id="5c87f" binding="panelMonhoc" layout-manager="GridLayoutManager" row-count="4" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <background color="-1"/>
+                          <enabled value="true"/>
+                          <visible value="true"/>
+                        </properties>
+                        <border type="none"/>
+                        <children>
+                          <component id="d21bb" class="javax.swing.JLabel" binding="lTenMH">
+                            <constraints>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Tên môn học:"/>
+                            </properties>
+                          </component>
+                          <component id="8ff97" class="javax.swing.JLabel" binding="lbSTTMH">
+                            <constraints>
+                              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Số tín chỉ:"/>
+                            </properties>
+                          </component>
+                          <component id="50de9" class="javax.swing.JButton" binding="btnResetMH">
+                            <constraints>
+                              <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Reset"/>
+                            </properties>
+                          </component>
+                          <component id="3c925" class="javax.swing.JTextField" binding="tTenMH">
+                            <constraints>
+                              <grid row="1" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="-1"/>
+                              </grid>
+                            </constraints>
+                            <properties>
+                              <editable value="true"/>
+                              <enabled value="true"/>
+                              <font size="16" style="0"/>
+                            </properties>
+                          </component>
+                          <component id="4cc24" class="javax.swing.JButton" binding="btnDeleteMH">
+                            <constraints>
+                              <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Delete"/>
+                            </properties>
+                          </component>
+                          <component id="391b4" class="javax.swing.JButton" binding="btnEditMH">
+                            <constraints>
+                              <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Edit"/>
+                            </properties>
+                          </component>
+                          <component id="2dd00" class="javax.swing.JLabel" binding="lMaMH">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Mã môn học:"/>
+                            </properties>
+                          </component>
+                          <component id="c8baa" class="javax.swing.JTextField" binding="tMaMH">
+                            <constraints>
+                              <grid row="0" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="-1"/>
+                              </grid>
+                            </constraints>
+                            <properties>
+                              <editable value="true"/>
+                              <enabled value="true"/>
+                              <font size="16" style="0"/>
+                              <text value=""/>
+                            </properties>
+                          </component>
+                          <component id="c3481" class="javax.swing.JButton" binding="btnSaveMH">
+                            <constraints>
+                              <grid row="3" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Add"/>
+                            </properties>
+                          </component>
+                          <component id="3d0a4" class="javax.swing.JRadioButton" binding="a1RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="1"/>
+                            </properties>
+                          </component>
+                          <component id="d18bf" class="javax.swing.JRadioButton" binding="a2RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="2"/>
+                            </properties>
+                          </component>
+                          <component id="3d78e" class="javax.swing.JRadioButton" binding="a6RadioButton">
+                            <constraints>
+                              <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="6"/>
+                            </properties>
+                          </component>
+                          <component id="2b97f" class="javax.swing.JRadioButton" binding="a5RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="5"/>
+                            </properties>
+                          </component>
+                          <component id="a9a42" class="javax.swing.JRadioButton" binding="a4RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="4"/>
+                            </properties>
+                          </component>
+                          <component id="c7e89" class="javax.swing.JRadioButton" binding="a3RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <text value="3"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="10a8a" binding="panelMH" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="84739" class="javax.swing.JTable" binding="tableMonhoc">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="50"/>
+                              </grid>
+                            </constraints>
+                            <properties/>
+                          </component>
+                        </children>
+                      </grid>
+                    </children>
                   </grid>
-                  <grid id="141ee" binding="jpHK" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                  <grid id="141ee" binding="jpHK" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -527,7 +717,198 @@
                       <foreground color="-16777216"/>
                     </properties>
                     <border type="none" title="Quản lý học kì"/>
-                    <children/>
+                    <children>
+                      <grid id="e56dd" layout-manager="GridLayoutManager" row-count="5" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <background color="-1"/>
+                          <enabled value="true"/>
+                          <font size="16" style="0"/>
+                          <visible value="true"/>
+                        </properties>
+                        <border type="none"/>
+                        <children>
+                          <component id="52c01" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Ngày bắt đầu:"/>
+                            </properties>
+                          </component>
+                          <component id="c9b51" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Ngày kết thúc"/>
+                            </properties>
+                          </component>
+                          <component id="d5c52" class="javax.swing.JButton" binding="btnSetHKHT">
+                            <constraints>
+                              <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Đặt làm HK hiện tại"/>
+                            </properties>
+                          </component>
+                          <component id="ec5c" class="javax.swing.JButton" binding="btnDeleteHK">
+                            <constraints>
+                              <grid row="4" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Delete"/>
+                            </properties>
+                          </component>
+                          <component id="98f58" class="javax.swing.JButton" binding="btnEditHK">
+                            <constraints>
+                              <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Edit"/>
+                            </properties>
+                          </component>
+                          <component id="769ac" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Tên học kì:"/>
+                            </properties>
+                          </component>
+                          <component id="756db" class="javax.swing.JButton" binding="btnAddHK">
+                            <constraints>
+                              <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="1" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Add"/>
+                            </properties>
+                          </component>
+                          <grid id="79483" binding="ngayBDHK" layout-manager="BorderLayout" hgap="0" vgap="0">
+                            <constraints>
+                              <grid row="2" column="1" row-span="1" col-span="8" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <enabled value="false"/>
+                              <font size="16" style="0"/>
+                            </properties>
+                            <border type="none"/>
+                            <children/>
+                          </grid>
+                          <grid id="1e965" binding="ngayKTHK" layout-manager="BorderLayout" hgap="0" vgap="0">
+                            <constraints>
+                              <grid row="3" column="1" row-span="1" col-span="8" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <enabled value="false"/>
+                              <font size="16" style="0"/>
+                            </properties>
+                            <border type="none"/>
+                            <children/>
+                          </grid>
+                          <component id="40f0b" class="javax.swing.JRadioButton" binding="HK1RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="1"/>
+                              <text value="HK1"/>
+                            </properties>
+                          </component>
+                          <component id="8e6dc" class="javax.swing.JRadioButton" binding="HK2RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="1"/>
+                              <text value="HK2"/>
+                            </properties>
+                          </component>
+                          <component id="dc1fe" class="javax.swing.JRadioButton" binding="HK3RadioButton" default-binding="true">
+                            <constraints>
+                              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="1"/>
+                              <text value="HK3"/>
+                            </properties>
+                          </component>
+                          <component id="eb6fa" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Năm học:"/>
+                            </properties>
+                          </component>
+                          <component id="e8998" class="javax.swing.JTextField" binding="tNamHK">
+                            <constraints>
+                              <grid row="1" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="-1"/>
+                              </grid>
+                            </constraints>
+                            <properties>
+                              <editable value="true"/>
+                              <enabled value="true"/>
+                              <font size="16" style="0"/>
+                              <text value=""/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                      <grid id="cfe1e" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </grid>
+                      <grid id="3bc81" binding="panelHK" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="8bef8" class="javax.swing.JTable" binding="tableHK">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="50"/>
+                              </grid>
+                            </constraints>
+                            <properties/>
+                          </component>
+                        </children>
+                      </grid>
+                    </children>
                   </grid>
                   <grid id="a51b" binding="jpSV" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
