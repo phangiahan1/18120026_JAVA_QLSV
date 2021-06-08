@@ -2,9 +2,11 @@ package swing;
 
 import com.toedter.calendar.JDateChooser;
 import dao.AccountDAO;
+import dao.ClazzDAO;
 import dao.SemesterDAO;
 import dao.SubjectDAO;
 import hibernate.Accounts;
+import hibernate.Clazz;
 import hibernate.Semester;
 import hibernate.Subjects;
 
@@ -139,12 +141,18 @@ public class trangChu {
     private JButton btnResetLop;
     private JButton btnAddLop;
     private JButton btnDeleteLop;
+    private JTextField tTongSV;
+    private JTextField tTongNam;
+    private JTextField tTongNu;
     //cho bang môn học
     private Subjects selectedSub;
     private int selectedIndexSub;
     //cho bang môn học
     private Semester selectedSem;
     private int selectedIndexSem;
+    //cho bang môn học
+    private Clazz selectedClass;
+    private int selectedIndexClass;
 
     public trangChu() {
         //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
@@ -580,6 +588,90 @@ public class trangChu {
                 tNamHK.setText("");
             } else {
                 showDialogAgain("Xóa không thành công");
+            }
+        });
+
+        //Khởi tạo dữ liệu cho lớp
+        showTableLop();
+        tableLopHoc.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableLopHoc.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Clazz> rsLop = ClazzDAO.getAllClass();
+                selectedIndexClass = tableLopHoc.convertRowIndexToModel(tableLopHoc.getSelectedRow());
+                selectedClass = rsLop.get(selectedIndexClass);
+                if (selectedClass != null) {
+                    tTenLop.setText(selectedClass.getfTenLh());
+                    tTongSV.setText(String.valueOf(selectedClass.getF_tongSV()));
+                    tTongNam.setText(String.valueOf(selectedClass.getF_tongNam()));
+                    tTongNu.setText(String.valueOf(selectedClass.getF_tongNu()));
+                }
+            }
+        });
+        btnResetLop.addActionListener(e -> {
+            tTenLop.setText("");
+            tTongSV.setText("");
+            tTongNam.setText("");
+            tTongNu.setText("");
+        });
+        btnAddLop.addActionListener(e -> {
+            Clazz clazz = new Clazz();
+            clazz.setF_tongSV(0);
+            clazz.setF_tongNu(0);
+            clazz.setF_tongNam(0);
+
+            if (tTenLop.getText().equals("")) {
+                showDialogAgain("Vui lòng nhập tên lớp");
+            } else {
+                if (ClazzDAO.isExists(tTenLop.getText())) {
+                    showDialogAgain("Lớp đã tồn tại");
+                    tTenLop.setText("");
+                    tTongNu.setText("");
+                    tTongNam.setText("");
+                    tTongSV.setText("");
+                } else {
+                    clazz.setfTenLh(tTenLop.getText());
+                    if (showDialog()) {
+                        if (ClazzDAO.saveLop(clazz)) {
+                            showDialogAgain("Thêm lớp thành công");
+                            panelLH.removeAll();
+                            tTenLop.setText("");
+                            tTongNu.setText("");
+                            tTongNam.setText("");
+                            tTongSV.setText("");
+                            showTableLop();
+                        } else {
+                            showDialogAgain("Thêm không thành công");
+                        }
+                    } else {
+                        showDialogAgain("Thêm không thành công");
+                    }
+                }
+
+            }
+
+        });
+        btnDeleteLop.addActionListener(e -> {
+            java.util.List<Clazz> rsLop1 = ClazzDAO.getAllClass();
+            selectedIndexClass = tableLopHoc.convertRowIndexToModel(tableLopHoc.getSelectedRow());
+            selectedClass = rsLop1.get(selectedIndexClass);
+
+            if (selectedClass.getF_tongSV() != 0) {
+                showDialogAgain("Lớp học có học sinh không thể xóa");
+            } else {
+                if (showDialogDelete()) {
+                    if (ClazzDAO.deleteLop(selectedClass)) {
+                        showDialogAgain("Xóa thành công");
+                        panelLH.removeAll();
+                        tTenLop.setText("");
+                        tTongNu.setText("");
+                        tTongNam.setText("");
+                        tTongSV.setText("");
+                        showTableLop();
+                    } else {
+                        showDialogAgain("Xóa không thành công");
+                    }
+                } else {
+                    showDialogAgain("Xóa không thành công");
+                }
             }
         });
     }
@@ -1018,7 +1110,66 @@ public class trangChu {
     //------------------------Các hàm cho quản lý Lop Học----------------------------------------------------------------
     //show table học kì
     public void showTableLop() {
-        String[] columnsLop = new String[]{"STT", "Tên HK", "Năm học", "Ngày bắt đầu", "Ngày kết thúc", "Học kì hiện tại"};
+        String[] columnsLop = new String[]{"STT", "Tên lớp", "Tổng sinh viên", "Tổng nam", "Tổng nữ"};
+        TableModel dataModelLop = new
+                AbstractTableModel() {
+                    List<Clazz> listLop = ClazzDAO.getAllClass();
 
+                    public String getColumnName(int columnIndex) {
+                        return columnsLop[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 5;
+                    }
+
+                    public int getRowCount() {
+                        return listLop.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Clazz si = listLop.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfMaLh();
+                            case 1:
+                                return si.getfTenLh();
+                            case 2:
+                                return si.getF_tongSV();
+                            case 3:
+                                return si.getF_tongNam();
+                            case 4:
+                                return si.getF_tongNu();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                            case 2:
+                            case 3:
+                            case 4:
+                                return Integer.class;
+                            case 1:
+                                return String.class;
+                        }
+                        return null;
+                    }
+                };
+        panelLH.setLayout(new BorderLayout());
+        panelLH.add(tableLopHoc, BorderLayout.CENTER);
+        panelLH.add(new JScrollPane(tableLopHoc));
+        panelLH.add(tableLopHoc.getTableHeader(), BorderLayout.NORTH);
+        tableLopHoc.setAutoCreateRowSorter(true);
+        tableLopHoc.setModel(dataModelLop);
+
+    }
+
+    private boolean showDialogLopHocCoSV() {
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "!!! Lớp học này có sinh viên. Bạn có muốn xóa !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
     }
 }
