@@ -15,7 +15,7 @@ public class AccountsStu implements java.io.Serializable {
     private String fDienThoai;
     private String fGioiTinh;
     private int fMaLop;
-    // liên kết với 1 biến bên class LopHoc tên là private List<SinhVien> _listSinhVien
+    // liên kết với 1 biến bên class Clazz tên là private List<SinhVien> _listSinhVien
     // mappedBy = "_lopHoc"
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_maLH")
@@ -119,5 +119,30 @@ public class AccountsStu implements java.io.Serializable {
 
     public void setfMaLop(int fMaLop) {
         this.fMaLop = fMaLop;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountsStu{" +
+                "fMaTkSV=" + fMaTkSV +
+                ", fTaiKhoan='" + fTaiKhoan + '\'' +
+                ", fPass='" + fPass + '\'' +
+                ", fHoTen='" + fHoTen + '\'' +
+                ", fNgaySinh=" + fNgaySinh +
+                ", fType=" + fType +
+                ", fDiaChi='" + fDiaChi + '\'' +
+                ", fDienThoai='" + fDienThoai + '\'' +
+                ", fGioiTinh='" + fGioiTinh + '\'' +
+                ", fMaLop=" + fMaLop +
+                ", _lopHoc=" + _lopHoc +
+                '}';
+    }
+
+    public Clazz get_lopHoc() {
+        return _lopHoc;
+    }
+
+    public void set_lopHoc(Clazz _lopHoc) {
+        this._lopHoc = _lopHoc;
     }
 }

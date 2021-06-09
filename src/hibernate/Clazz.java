@@ -36,9 +36,9 @@ public class Clazz {
         this.fTenLh = fTenLh;
     }
 
-    // liên kết với 1 biến bên class SinhVien tên là private LopHoc _lopHoc
+    // liên kết với 1 biến bên class AccountsStu tên là private Clazz _lopHoc
     @OneToMany(mappedBy = "_lopHoc", cascade = CascadeType.ALL)
-    private List<Accounts> _listSinhVien = new ArrayList<Accounts>();
+    private List<AccountsStu> _listSinhVien = new ArrayList<AccountsStu>();
 
     @Basic
     @Column(name = "f_tongSV", nullable = true)
@@ -96,5 +96,16 @@ public class Clazz {
         return Objects.hash(fMaLh, fTenLh, f_tongSV, f_tongNam, f_tongNu, _listSinhVien);
     }
 
+    public List<AccountsStu> get_listSinhVien() {
+        return _listSinhVien;
+    }
 
+    public void set_listSinhVien(List<AccountsStu> _listSinhVien) {
+        this._listSinhVien = _listSinhVien;
+    }
+
+    public void addSinhVien(AccountsStu sv) {
+        sv.set_lopHoc(this);
+        _listSinhVien.add(sv);
+    }
 }

@@ -1,10 +1,6 @@
 package hibernate;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Objects;
+import javax.persistence.*;
 
 @Entity
 public class Course {
@@ -12,6 +8,11 @@ public class Course {
     private String fPhongHoc;
     private Integer fCaHoc;
     private String fThuHoc;
+    private int fMaHk;
+    private int fMaMH;
+
+
+    private int fMaGv;
 
     @Id
     @Column(name = "f_maHP", nullable = false)
@@ -53,16 +54,74 @@ public class Course {
         this.fThuHoc = fThuHoc;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return fMaHp == course.fMaHp && Objects.equals(fPhongHoc, course.fPhongHoc) && Objects.equals(fCaHoc, course.fCaHoc) && Objects.equals(fThuHoc, course.fThuHoc);
+    // liên kết với 1 biến bên class Subjects tên là private List<Course> _listHocPhan
+    // mappedBy = "_lopHoc"
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_maMH")
+    private Subjects _monHoc;
+    // liên kết với 1 biến bên class Subjects tên là private List<Course> _listHocPhan
+    // mappedBy = "_lopHoc"
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_maHK")
+    private Semester _hocKi;
+
+    @Basic
+    @Column(name = "f_maHK", nullable = false)
+    public int getfMaHk() {
+        return fMaHk;
+    }
+
+    public void setfMaHk(int fMaHk) {
+        this.fMaHk = fMaHk;
+    }
+
+    @Basic
+    @Column(name = "f_maMH", nullable = false)
+    public int getfMaMH() {
+        return fMaMH;
+    }
+
+    public void setfMaMH(int fMaMH) {
+        this.fMaMH = fMaMH;
+    }
+
+    @Basic
+    @Column(name = "f_idGV", nullable = false)
+    public int getfMaGv() {
+        return fMaGv;
+    }
+
+    public void setfMaGv(int fMaGv) {
+        this.fMaGv = fMaGv;
+    }
+
+    public Subjects get_monHoc() {
+        return _monHoc;
+    }
+
+    public void set_monHoc(Subjects _monHoc) {
+        this._monHoc = _monHoc;
+    }
+
+    public Semester get_hocKi() {
+        return _hocKi;
+    }
+
+    public void set_hocKi(Semester _hocKi) {
+        this._hocKi = _hocKi;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(fMaHp, fPhongHoc, fCaHoc, fThuHoc);
+    public String toString() {
+        return "Course{" +
+                "fMaHp=" + fMaHp +
+                ", fPhongHoc='" + fPhongHoc + '\'' +
+                ", fCaHoc=" + fCaHoc +
+                ", fThuHoc='" + fThuHoc + '\'' +
+                ", fMaHk=" + fMaHk +
+                ", fMaMH=" + fMaMH +
+                ", _monHoc=" + _monHoc +
+                ", _hocKi=" + _hocKi +
+                '}';
     }
 }

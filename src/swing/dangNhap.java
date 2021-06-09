@@ -1,7 +1,9 @@
 package swing;
 
 import dao.AccountDAO;
+import dao.ClassStudentDAO;
 import hibernate.Accounts;
+import hibernate.AccountsStu;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,6 +16,7 @@ import java.util.List;
 public class dangNhap {
     private static JFrame close;
     List<Accounts> rs = AccountDAO.getAllAccounts();
+    List<AccountsStu> rs1 = ClassStudentDAO.getAllAcc();
     private JPanel mainPanel;
     private JButton btnDangNhap;
     private JButton btnQuenMK;
@@ -35,6 +38,7 @@ public class dangNhap {
                 String password = String.valueOf(txtPass.getPassword());
                 System.out.println(password);
                 Accounts accounts = null;
+                AccountsStu accountsStu = null;
                 if (username.trim().equals("")) {
                     showDialogAgain("Vui lòng điền tài khoản!!!");
                 } else if (password.trim().equals("")) {
@@ -49,6 +53,21 @@ public class dangNhap {
                                 accounts = item;
                                 close.dispose();
                                 trangChu.init(accounts);
+                            } else {
+                                showDialogAgain("Sai mật khẩu");
+                                txtPass.setText("");
+                            }
+                            break;
+                        }
+                    }
+                    for (AccountsStu item : rs1) {
+                        if (item.getfTaiKhoan().equals(username)) {
+                            kt = 1;
+                            if (item.getfPass().equals(password)) {
+                                showDialogAgain("Đăng nhập thành công");
+                                accountsStu = item;
+                                close.dispose();
+                                trangChuSV.init(accountsStu);
                             } else {
                                 showDialogAgain("Sai mật khẩu");
                                 txtPass.setText("");

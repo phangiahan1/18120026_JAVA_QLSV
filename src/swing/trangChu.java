@@ -1,14 +1,8 @@
 package swing;
 
 import com.toedter.calendar.JDateChooser;
-import dao.AccountDAO;
-import dao.ClazzDAO;
-import dao.SemesterDAO;
-import dao.SubjectDAO;
-import hibernate.Accounts;
-import hibernate.Clazz;
-import hibernate.Semester;
-import hibernate.Subjects;
+import dao.*;
+import hibernate.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -35,6 +29,10 @@ public class trangChu {
     //datechooser hk
     JDateChooser dateChooserBD;
     JDateChooser dateChooserKT;
+
+    //datechooser dkhp
+    JDateChooser dateChooserBDdkhp;
+    JDateChooser dateChooserKTdkhp;
     //create array of jLabel
     JLabel[] menuLabels = new JLabel[9];
     //creat array of jPanel
@@ -144,6 +142,49 @@ public class trangChu {
     private JTextField tTongSV;
     private JTextField tTongNam;
     private JTextField tTongNu;
+    private JTable tableSinhVien;
+    private JPanel panelSearchSVtheoLop;
+    private JTextField tTaiKhoanSV;
+    private JTextField tTenSV;
+    private JPasswordField tMKSV;
+    private JTextField tLopSV;
+    private JPanel panelNgaySinhSV;
+    private JTextField tDiaChiSV;
+    private JTextField tDTSinhVien;
+    private JRadioButton raNamSV;
+    private JRadioButton raNuSV;
+    private JPanel tMonDK;
+    private JTable tableHocPhan;
+    private JPanel panelHocPhan;
+    private JButton btnXoaDkhp;
+    private JButton btnResetDkhp;
+    private JButton btnThemDkhp;
+    private JTextField tTenNamHoc_Dkhp;
+    private JPanel panelNgayBDKHP;
+    private JPanel panelNgayKTDKHP;
+    private JRadioButton raHK1_Dkhp;
+    private JRadioButton raHK2_Dkhp;
+    private JRadioButton raHK3_Dkhp;
+    private JTable tableDKHP;
+    private JPanel panelDKHP;
+    private JTextField tTenGiaoVienHP;
+    private JRadioButton rahpT2;
+    private JRadioButton rahpT5;
+    private JRadioButton rahpT3;
+    private JRadioButton rahpT6;
+    private JRadioButton rahpT4;
+    private JRadioButton rahpT7;
+    private JTextField tPhongHocHP;
+    private JTextField tSoTinChiHP;
+    private JRadioButton ca1730RadioButton;
+    private JRadioButton ca2930RadioButton;
+    private JRadioButton ca31330RadioButton;
+    private JTextField tSoSlotHP;
+    private JComboBox comboBoxTenMon;
+    private JComboBox comboBoxMaMon;
+    private JButton btnResetHP;
+    private JButton btnAddHP;
+    private JButton btnDelHP;
     //cho bang môn học
     private Subjects selectedSub;
     private int selectedIndexSub;
@@ -153,6 +194,9 @@ public class trangChu {
     //cho bang môn học
     private Clazz selectedClass;
     private int selectedIndexClass;
+    //cho bang đăng ký hp
+    private Dkhp selectedDkhp;
+    private int selectedIndexDkhp;
 
     public trangChu() {
         //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
@@ -674,6 +718,39 @@ public class trangChu {
                 }
             }
         });
+
+        //Khởi tạo dữ liệu cho ddkhp
+        initDKHP();
+        tableDKHP.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableDKHP.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Dkhp> rsDkhp = DkhpDAO.getAllDKHP();
+                selectedIndexDkhp = tableDKHP.convertRowIndexToModel(tableDKHP.getSelectedRow());
+                selectedDkhp = rsDkhp.get(selectedIndexDkhp);
+                if (selectedDkhp != null) {
+                    if (selectedDkhp.get_hocki().getfTenHk().equals("HK1")) {
+                        raHK1_Dkhp.setSelected(true);
+                    }
+                    if (selectedDkhp.get_hocki().getfTenHk().equals("HK2")) {
+                        raHK2_Dkhp.setSelected(true);
+                    }
+                    if (selectedDkhp.get_hocki().getfTenHk().equals("HK3")) {
+                        raHK3_Dkhp.setSelected(true);
+                    }
+                    tTenNamHoc_Dkhp.setText(selectedDkhp.get_hocki().getfNamHoc());
+                    dateChooserBDdkhp.setDate(selectedDkhp.getfNgayDbdk());
+                    dateChooserKTdkhp.setDate(selectedDkhp.getfNgayKtdk());
+                }
+            }
+        });
+        btnResetDkhp.addActionListener(e -> {
+            resetTXTdkhp();
+        });
+        btnXoaDkhp.addActionListener(e -> {
+            java.util.List<Dkhp> rsdkhp1 = DkhpDAO.getAllDKHP();
+            selectedIndexDkhp = tableDKHP.convertRowIndexToModel(tableDKHP.getSelectedRow());
+            selectedDkhp = rsdkhp1.get(selectedIndexDkhp);
+
+        });
     }
 
     //Hàm init ban đầu
@@ -775,6 +852,32 @@ public class trangChu {
         dateChooserKT.setDateFormatString("yyyy-MM-dd");
         ngayBDHK.add(dateChooserBD);
         ngayKTHK.add(dateChooserKT);
+    }
+
+    //init các kì đkhp
+    public void initDKHP() {
+        showTableDKHP();
+        ButtonGroup dkhp = new ButtonGroup();
+        dkhp.add(raHK1_Dkhp);
+        dkhp.add(raHK2_Dkhp);
+        dkhp.add(raHK3_Dkhp);
+
+        raHK1_Dkhp.setSelected(true);
+
+        dateChooserBDdkhp = new JDateChooser(today.getTime());
+        dateChooserKTdkhp = new JDateChooser(today.getTime());
+        dateChooserBDdkhp.setDateFormatString("yyyy-MM-dd");
+        dateChooserKTdkhp.setDateFormatString("yyyy-MM-dd");
+        panelNgayBDKHP.add(dateChooserBDdkhp);
+        panelNgayKTDKHP.add(dateChooserKTdkhp);
+    }
+
+    //init Courses
+    public void initCourse() {
+        showTableHocPhan();
+        String[] tenMonHocList = SubjectDAO.getTenMonHocList();
+        comboBoxTenMon = new JComboBox(tenMonHocList);
+        //chua xong
     }
 
     //------------------------Các hàm và menu Panel---------------------------------------------------------------------
@@ -986,7 +1089,64 @@ public class trangChu {
     }
 
     //------------------------Các hàm cho quản lý sinh viên-------------------------------------------------------------
+    public void showTableSinhVienAll() {
+        String[] columnsSV = new String[]{"STT", "Tên học sinh", "Tên Lớp", "Môn đăng ký"};
+        TableModel dataModelLop = new
+                AbstractTableModel() {
+                    List<AccountsStu> listSV = ClassStudentDAO.getAllAcc();
 
+                    public String getColumnName(int columnIndex) {
+                        return columnsSV[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 4;
+                    }
+
+                    public int getRowCount() {
+                        return listSV.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        AccountsStu si = listSV.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfMaTkSV();
+                            case 1:
+                                return si.getfHoTen();
+                            case 2:
+                                return si.get_lopHoc().getfTenLh();
+                            case 3:
+                                CheckboxGroup checkboxGroup = new CheckboxGroup();
+                                //for get môn học
+                                //Check môn đk
+                                return checkboxGroup;
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                                return Integer.class;
+                            case 1:
+                            case 2:
+                                return String.class;
+                            case 3:
+                                return CheckboxGroup.class;
+                        }
+                        return null;
+                    }
+                };
+        panelLH.setLayout(new BorderLayout());
+        panelLH.add(tableLopHoc, BorderLayout.CENTER);
+        panelLH.add(new JScrollPane(tableLopHoc));
+        panelLH.add(tableLopHoc.getTableHeader(), BorderLayout.NORTH);
+        tableLopHoc.setAutoCreateRowSorter(true);
+        tableLopHoc.setModel(dataModelLop);
+
+    }
 
     //------------------------Các hàm cho quản lý Môn học---------------------------------------------------------------
     //show table giáo vụ
@@ -1171,5 +1331,134 @@ public class trangChu {
         int dialogResult = JOptionPane.showConfirmDialog(null,
                 "!!! Lớp học này có sinh viên. Bạn có muốn xóa !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
         return dialogResult == JOptionPane.YES_OPTION;
+    }
+
+    //------------------------Các hàm cho quản lý ĐKHP------------------------------------------------------------------
+    //show table học kì
+    public void showTableDKHP() {
+        String[] columnsDKHP = new String[]{"STT", "Tên HK", "Năm học", "Ngày bắt đầu đăng ký", "Ngày kết thúc đăng ký"};
+        TableModel dataModelDKHP = new
+                AbstractTableModel() {
+                    List<Dkhp> listDkhp = DkhpDAO.getAllDKHP();
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsDKHP[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 5;
+                    }
+
+                    public int getRowCount() {
+                        return listDkhp.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Dkhp si = listDkhp.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfMaDkhp();
+                            case 1:
+                                return si.get_hocki().getfTenHk();
+                            case 2:
+                                return si.get_hocki().getfNamHoc();
+                            case 3:
+                                return si.getfNgayDbdk();
+                            case 4:
+                                return si.getfMaDkhp();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                                return Integer.class;
+                            case 1:
+                            case 2:
+                                return String.class;
+                            case 3:
+                            case 4:
+                                return Date.class;
+                        }
+                        return null;
+                    }
+                };
+        panelDKHP.setLayout(new BorderLayout());
+        panelDKHP.add(tableDKHP, BorderLayout.CENTER);
+        panelDKHP.add(new JScrollPane(tableDKHP));
+        panelDKHP.add(tableDKHP.getTableHeader(), BorderLayout.NORTH);
+        tableDKHP.setAutoCreateRowSorter(true);
+        tableDKHP.setModel(dataModelDKHP);
+    }
+
+    public void resetTXTdkhp() {
+        tTenNamHoc_Dkhp.setText("");
+        raHK1_Dkhp.setSelected(true);
+        dateChooserKTdkhp.setDate(today.getTime());
+        dateChooserBDdkhp.setDate(today.getTime());
+    }
+
+    //------------------------Các hàm cho quản lý Hoc phan------------------------------------------------------------------
+    //show table học kì
+    public void showTableHocPhan() {
+        String[] columnsDKHP = new String[]{"Mã môn", "Tên môn", "Số tín chỉ", "Giáo viên", "Thứ học", "Ca học"};
+        TableModel dataModelHP = new
+                AbstractTableModel() {
+                    List<Course> listDkhp = CourseDAO.getAllCoursesHienTai();
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsDKHP[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 6;
+                    }
+
+                    public int getRowCount() {
+                        return listDkhp.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Course si = listDkhp.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.get_monHoc().getFidMh();
+                            case 1:
+                                return si.get_monHoc().getfTenMh();
+                            case 2:
+                                return si.get_monHoc().getfSoTinChi();
+                            case 3:
+                                return AccountDAO.getAccount(si.getfMaGv()).getfHoTen();
+                            case 4:
+                                return si.getfThuHoc();
+                            case 5:
+                                return si.getfCaHoc();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 5:
+                            case 2:
+                                return Integer.class;
+                            case 0:
+                            case 1:
+                            case 4:
+                            case 3:
+                                return String.class;
+                        }
+                        return null;
+                    }
+                };
+        panelHocPhan.setLayout(new BorderLayout());
+        panelHocPhan.add(tableHocPhan, BorderLayout.CENTER);
+        panelHocPhan.add(new JScrollPane(tableHocPhan));
+        panelHocPhan.add(tableHocPhan.getTableHeader(), BorderLayout.NORTH);
+        tableHocPhan.setAutoCreateRowSorter(true);
+        tableHocPhan.setModel(dataModelHP);
     }
 }

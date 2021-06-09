@@ -11,5 +11,14 @@
         <property name="fTenLh">
             <column name="f_tenLH" sql-type="varchar(10)" length="10" not-null="true"/>
         </property>
+        <property name="f_tongSV">
+            <column name="f_tongSV" sql-type="int(11)" not-null="false"/>
+        </property>
+        <property name="f_tongNam">
+            <column name="f_tongNam" sql-type="int(11)" not-null="false"/>
+        </property>
+        <property name="f_tongNu">
+            <column name="f_tongNu" sql-type="int(11)" not-null="false"/>
+        </property>
     </class>
 </hibernate-mapping>

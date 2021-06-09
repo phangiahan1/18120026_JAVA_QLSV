@@ -75,6 +75,24 @@ public class SemesterDAO {
         return kq;
     }
 
+    public static Semester findHK(int maHK) {
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Semester semesters = new Semester();
+        try {
+            final String hql = "select acc from Semester acc where acc.fMaHk = :so";
+            Query query = session.createQuery(hql);
+            query.setParameter("so", maHK);
+            semesters = (Semester) query.uniqueResult();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return semesters;
+    }
+
     public static boolean setHocKiHienTai(Semester semester) {
         //open session
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -145,6 +163,24 @@ public class SemesterDAO {
                 session.close();
             }
         }
+    }
+
+    public static Semester getSemester(int maHK) {
+        Semester acc = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            acc = session.get(Semester.class, maHK);
+
+        } catch (HibernateException e) {
+            System.err.println();
+        } finally {
+            session.close();
+        }
+        return acc;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(SemesterDAO.getSemester(1));
     }
 }
 

@@ -19,8 +19,7 @@
         <mapping class="hibernate.Accounts"/>
         <mapping class="hibernate.Clazz"/>
         <mapping resource="Clazz.hbm.xml"/>
-        <mapping resource="ClassStudent.hbm.xml"/>
-        <mapping class="hibernate.ClassStudent"/>
+
         <mapping class="hibernate.Course"/>
         <mapping resource="Course.hbm.xml"/>
         <mapping resource="Dkhp.hbm.xml"/>
@@ -32,6 +31,9 @@
 
         <mapping resource="StudentDkhp.hbm.xml"/>
         <mapping class="hibernate.StudentDkhp"/>
+
+        <mapping resource="AccountsStu.hbm.xml"/>
+        <mapping class="hibernate.AccountsStu"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 

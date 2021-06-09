@@ -1,11 +1,9 @@
 package hibernate;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Semester {
@@ -76,12 +74,19 @@ public class Semester {
         this.fHKhienTai = fHKhienTai;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Semester semester = (Semester) o;
-        return fMaHk == semester.fMaHk && fNamHoc == semester.fNamHoc && Objects.equals(fTenHk, semester.fTenHk) && Objects.equals(fNgayBd, semester.fNgayBd) && Objects.equals(fNgayKt, semester.fNgayKt) && Objects.equals(fHKhienTai, semester.fHKhienTai);
+    // liên kết với 1 biến bên class Dkhp tên là private Dkhp _hocki
+    @OneToMany(mappedBy = "_hocki", cascade = CascadeType.ALL)
+    private List<Dkhp> _listDKHP = new ArrayList<Dkhp>();
+    // liên kết với 1 biến bên class Course tên là private Course _hocKi
+    @OneToMany(mappedBy = "_hocKi", cascade = CascadeType.ALL)
+    private List<Course> _listHocPhanHocKi = new ArrayList<Course>();
+
+    public List<Dkhp> get_listDKHP() {
+        return _listDKHP;
+    }
+
+    public void set_listDKHP(List<Dkhp> _listDKHP) {
+        this._listDKHP = _listDKHP;
     }
 
     @Override
@@ -93,12 +98,15 @@ public class Semester {
                 ", fNgayBd=" + fNgayBd +
                 ", fNgayKt=" + fNgayKt +
                 ", fHKhienTai=" + fHKhienTai +
+                ", _listDKHP=" + _listDKHP +
                 '}';
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(fMaHk, fTenHk, fNamHoc, fNgayBd, fNgayKt, fHKhienTai);
+    public List<Course> get_listHocPhanHocKi() {
+        return _listHocPhanHocKi;
     }
 
+    public void set_listHocPhanHocKi(List<Course> _listHocPhanHocKi) {
+        this._listHocPhanHocKi = _listHocPhanHocKi;
+    }
 }

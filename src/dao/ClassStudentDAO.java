@@ -1,10 +1,13 @@
 package dao;
 
+import hibernate.AccountsStu;
 import hibernate.Clazz;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
+
+import java.util.List;
 
 public class ClassStudentDAO {
     public static int TongHS1lop(Clazz clazz) {
@@ -53,10 +56,87 @@ public class ClassStudentDAO {
         return kq;
     }
 
-//    public static void main(String[] args) {
-//        List<Clazz> clazzes = ClazzDAO.getAllClass();
-//        for (Clazz clazz : clazzes){
-//            System.out.println(ClassStudentDAO.TongHS1lopNu(clazz));
-//        }
-//    }
+    public static void updateAccount(AccountsStu acc) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try {
+            session.beginTransaction();
+            session.update(acc);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public static List<AccountsStu> getAcc_Lop(String maLop) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Clazz clazz = ClazzDAO.getClassTen(maLop);
+
+        List<AccountsStu> accountsStus = null;
+        try {
+
+            final String hql = "select acc from AccountsStu acc where acc.fMaLop = :maLH";
+            Query query = session.createQuery(hql);
+            query.setParameter("maLH", clazz.getfMaLh());
+            //Get all accounts
+            accountsStus = query.list();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return accountsStus;
+    }
+
+    public static List<AccountsStu> getAllAcc() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        List<AccountsStu> accountsStus = null;
+        try {
+
+            final String hql = "select acc from AccountsStu acc order by acc.fMaLop ";
+            Query query = session.createQuery(hql);
+            //Get all accounts
+            accountsStus = query.list();
+            for (AccountsStu accountsStu : accountsStus) {
+                accountsStu.set_lopHoc(ClazzDAO.getClassMa(accountsStu.getfMaLop()));
+                ClassStudentDAO.updateAccount(accountsStu);
+            }
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return accountsStus;
+    }
+
+    public static AccountsStu getAccByName(int name) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        AccountsStu accountsStu = new AccountsStu();
+        try {
+
+            final String hql = "select acc from AccountsStu acc where acc.fMaTkSV = :ten ";
+            Query query = session.createQuery(hql);
+            query.setParameter("ten", name);
+            accountsStu = (AccountsStu) query.uniqueResult();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return accountsStu;
+    }
+
+
+    public static void main(String[] args) {
+        List<AccountsStu> list = ClassStudentDAO.getAllAcc();
+        for (AccountsStu clazz : list) {
+            System.out.println(clazz.toString());
+        }
+    }
 }

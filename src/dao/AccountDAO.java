@@ -53,22 +53,7 @@ public class AccountDAO {
         Accounts acc = null;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-//            accounts = (Accounts) session.get(Accounts.class,tk);
-//            final  String hql = "select acc.fMaTk   from Accounts acc where acc.fTaiKhoan="+tk;
-//            Query query = session.createQuery(hql);
-
-//            String hql = "SELECT u.fMaTk FROM Accounts u WHERE u.fTaiKhoan = :tk";
-//            String id = session.createQuery(hql, String.class).setParameter("tk", tk).uniqueResult();
-//
-//            acc = (Accounts) session.get(Accounts.class,id);
-
-
-//            List<Accounts> list = session.createQuery("FROM Accounts WHERE fTaiKhoan LIKE :fTaiKhoan")
-//                    .setParameter("fTaiKhoan", "%" + fTaiKhoan + "%").list();
-//            for (Accounts obj : list) {
-//                acc = obj;
-//            }
-            acc = (Accounts) session.get(Accounts.class, fTaiKhoan);
+            acc = session.get(Accounts.class, fTaiKhoan);
 
         } catch (HibernateException e) {
             System.err.println();

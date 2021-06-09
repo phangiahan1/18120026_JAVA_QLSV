@@ -32,6 +32,44 @@ public class ClazzDAO {
         return clazzes;
     }
 
+    public static Clazz getClassMa(int maLop) {
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Clazz clazz = new Clazz();
+        try {
+            final String hql = "select sj from Clazz sj where  sj.fMaLh = :maLopHoc";
+            Query query = session.createQuery(hql);
+            query.setParameter("maLopHoc", maLop);
+
+            clazz = (Clazz) query.uniqueResult();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return clazz;
+    }
+
+    public static Clazz getClassTen(String maLop) {
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Clazz clazz = new Clazz();
+        try {
+            final String hql = "select sj from Clazz sj where  sj.fTenLh = :maLopHoc";
+            Query query = session.createQuery(hql);
+            query.setParameter("maLopHoc", maLop);
+
+            clazz = (Clazz) query.uniqueResult();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return clazz;
+    }
+
     public static void updateClass(Clazz clazz) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -119,8 +157,7 @@ public class ClazzDAO {
     }
 
     public static void main(String[] args) {
-        System.out.println(ClazzDAO.isExists("18"));
-        System.out.println(ClazzDAO.isExists("18CTT1"));
+        System.out.println(ClazzDAO.getClassMa(1).toString());
 
     }
 }

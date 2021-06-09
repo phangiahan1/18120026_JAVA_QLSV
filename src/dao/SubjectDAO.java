@@ -111,4 +111,29 @@ public class SubjectDAO {
             }
         }
     }
+
+    public static Subjects getSubject(int maMon) {
+        Subjects acc = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            acc = session.get(Subjects.class, maMon);
+
+        } catch (HibernateException e) {
+            System.err.println();
+        } finally {
+            session.close();
+        }
+        return acc;
+    }
+
+    public static String[] getTenMonHocList() {
+        String[] li = null;
+        int i = 0;
+        List<Subjects> list = getAllSubjects();
+        for (Subjects subject : list) {
+            li[i] = subject.getfTenMh();
+            i++;
+        }
+        return li;
+    }
 }

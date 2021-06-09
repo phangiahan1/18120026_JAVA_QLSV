@@ -8,6 +8,9 @@
         <id name="fMaDkhp">
             <column name="f_maDKHP" sql-type="int(11)"/>
         </id>
+        <property name="fMaHK">
+            <column name="f_maHK" sql-type="int(11)" not-null="true"/>
+        </property>
         <property name="fNgayDbdk">
             <column name="f_ngayDBDK" sql-type="date" not-null="true"/>
         </property>

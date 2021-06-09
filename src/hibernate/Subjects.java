@@ -1,10 +1,8 @@
 package hibernate;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Subjects {
@@ -56,16 +54,15 @@ public class Subjects {
         this.fSoTinChi = fSoTinChi;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Subjects subjects = (Subjects) o;
-        return fMaMh == subjects.fMaMh && fidMh == subjects.fidMh && fSoTinChi == subjects.fSoTinChi && Objects.equals(fTenMh, subjects.fTenMh);
+    // liên kết với 1 biến bên class Course tên là private Course _monHoc
+    @OneToMany(mappedBy = "_monHoc", cascade = CascadeType.ALL)
+    private List<Course> _listHocPhan = new ArrayList<Course>();
+
+    public List<Course> get_listHocPhan() {
+        return _listHocPhan;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(fMaMh, fidMh, fTenMh, fSoTinChi);
+    public void set_listHocPhan(List<Course> _listHocPhan) {
+        this._listHocPhan = _listHocPhan;
     }
 }
