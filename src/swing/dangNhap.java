@@ -68,6 +68,7 @@ public class dangNhap {
                                 accountsStu = item;
                                 close.dispose();
                                 trangChuSV.init(accountsStu);
+                                //SinhVienMenu.init(accountsStu);
                             } else {
                                 showDialogAgain("Sai mật khẩu");
                                 txtPass.setText("");

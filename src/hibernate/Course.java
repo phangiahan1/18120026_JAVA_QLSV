@@ -1,6 +1,10 @@
 package hibernate;
 
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Course {
@@ -10,6 +14,7 @@ public class Course {
     private String fThuHoc;
     private int fMaHk;
     private int fMaMH;
+    private int fSoSlot;
 
 
     private int fMaGv;
@@ -95,6 +100,18 @@ public class Course {
         this.fMaGv = fMaGv;
     }
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "student_dkhp",
+            joinColumns = {@JoinColumn(name = "f_maCourse")},
+            inverseJoinColumns = {@JoinColumn(name = "f_maTKSV")})
+    private Set<AccountsStu> sinhvienList = new HashSet<>();
+
+    @Basic
+    @Column(name = "f_soSlot", nullable = false)
+    public int getfSoSlot() {
+        return fSoSlot;
+    }
+
     public Subjects get_monHoc() {
         return _monHoc;
     }
@@ -111,6 +128,10 @@ public class Course {
         this._hocKi = _hocKi;
     }
 
+    public void setfSoSlot(int fSoSlot) {
+        this.fSoSlot = fSoSlot;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -120,8 +141,31 @@ public class Course {
                 ", fThuHoc='" + fThuHoc + '\'' +
                 ", fMaHk=" + fMaHk +
                 ", fMaMH=" + fMaMH +
+                ", fSoSlot=" + fSoSlot +
+                ", fMaGv=" + fMaGv +
                 ", _monHoc=" + _monHoc +
                 ", _hocKi=" + _hocKi +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return fMaHk == course.fMaHk && fMaMH == course.fMaMH && fSoSlot == course.fSoSlot && fMaGv == course.fMaGv && fPhongHoc.equals(course.fPhongHoc) && fCaHoc.equals(course.fCaHoc) && fThuHoc.equals(course.fThuHoc);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fPhongHoc, fCaHoc, fThuHoc, fMaHk, fMaMH, fSoSlot, fMaGv);
+    }
+
+    public Set<AccountsStu> getSinhvienList() {
+        return sinhvienList;
+    }
+
+    public void setSinhvienList(Set<AccountsStu> sinhvienList) {
+        this.sinhvienList = sinhvienList;
     }
 }

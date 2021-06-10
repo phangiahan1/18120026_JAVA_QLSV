@@ -12,7 +12,7 @@
             <column name="f_maCourse" sql-type="int(11)"/>
         </property>
         <property name="fMaTK">
-            <column name="f_maTK" sql-type="int(11)"/>
+            <column name="f_maTKSV" sql-type="int(11)"/>
         </property>
     </class>
 </hibernate-mapping>

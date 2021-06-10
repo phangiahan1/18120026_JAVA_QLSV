@@ -33,7 +33,7 @@ public class StudentDkhp {
     }
 
     @Basic
-    @Column(name = "f_maTK", nullable = false)
+    @Column(name = "f_maTKSV", nullable = false)
     public int getfMaTK() {
         return fMaTK;
     }
@@ -47,7 +47,7 @@ public class StudentDkhp {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudentDkhp that = (StudentDkhp) o;
-        return fMaHSHP == that.fMaHSHP && fMaCourse == that.fMaCourse && fMaTK == that.fMaTK;
+        return fMaCourse == that.fMaCourse && fMaTK == that.fMaTK;
     }
 
     @Override
@@ -55,4 +55,12 @@ public class StudentDkhp {
         return Objects.hash(fMaHSHP, fMaCourse, fMaTK);
     }
 
+    @Override
+    public String toString() {
+        return "StudentDkhp{" +
+                "fMaHSHP=" + fMaHSHP +
+                ", fMaCourse=" + fMaCourse +
+                ", fMaTK=" + fMaTK +
+                '}';
+    }
 }

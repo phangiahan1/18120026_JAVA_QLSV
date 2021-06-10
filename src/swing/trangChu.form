@@ -1477,19 +1477,6 @@
                               <text value="Tên môn:"/>
                             </properties>
                           </component>
-                          <component id="31a5a" class="javax.swing.JTextField" binding="tSoTinChiHP">
-                            <constraints>
-                              <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                                <preferred-size width="150" height="-1"/>
-                              </grid>
-                            </constraints>
-                            <properties>
-                              <editable value="true"/>
-                              <enabled value="true"/>
-                              <font size="16" style="0"/>
-                              <text value=""/>
-                            </properties>
-                          </component>
                           <component id="526e2" class="javax.swing.JLabel">
                             <constraints>
                               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
@@ -1498,19 +1485,6 @@
                               <font size="16" style="0"/>
                               <foreground color="-16777216"/>
                               <text value="Giáo viên:"/>
-                            </properties>
-                          </component>
-                          <component id="66e09" class="javax.swing.JTextField" binding="tTenGiaoVienHP">
-                            <constraints>
-                              <grid row="2" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                                <preferred-size width="150" height="-1"/>
-                              </grid>
-                            </constraints>
-                            <properties>
-                              <editable value="true"/>
-                              <enabled value="true"/>
-                              <font size="16" style="0"/>
-                              <text value=""/>
                             </properties>
                           </component>
                           <component id="92ead" class="javax.swing.JRadioButton" binding="rahpT2">
@@ -1584,16 +1558,6 @@
                               <text value=""/>
                             </properties>
                           </component>
-                          <component id="98570" class="javax.swing.JLabel">
-                            <constraints>
-                              <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <font size="16" style="0"/>
-                              <foreground color="-16777216"/>
-                              <text value="Số slot:"/>
-                            </properties>
-                          </component>
                           <component id="19379" class="javax.swing.JLabel">
                             <constraints>
                               <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
@@ -1604,7 +1568,7 @@
                               <text value="Thứ: "/>
                             </properties>
                           </component>
-                          <component id="5a034" class="javax.swing.JRadioButton" binding="ca1730RadioButton" default-binding="true">
+                          <component id="5a034" class="javax.swing.JRadioButton" binding="raCa1">
                             <constraints>
                               <grid row="5" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -1612,7 +1576,7 @@
                               <text value="Ca 1 (7:30 – 9:30)"/>
                             </properties>
                           </component>
-                          <component id="3e366" class="javax.swing.JRadioButton" binding="ca2930RadioButton" default-binding="true">
+                          <component id="3e366" class="javax.swing.JRadioButton" binding="raCa2">
                             <constraints>
                               <grid row="6" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -1620,7 +1584,7 @@
                               <text value="Ca 2 (9:30 – 11:30)"/>
                             </properties>
                           </component>
-                          <component id="bdfbe" class="javax.swing.JRadioButton" binding="ca31330RadioButton" default-binding="true">
+                          <component id="bdfbe" class="javax.swing.JRadioButton" binding="raCa3">
                             <constraints>
                               <grid row="5" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -1628,25 +1592,12 @@
                               <text value="Ca 3 (13:30 – 15:30)"/>
                             </properties>
                           </component>
-                          <component id="8efd1" class="javax.swing.JRadioButton" default-binding="true">
+                          <component id="8efd1" class="javax.swing.JRadioButton" binding="raCa4">
                             <constraints>
                               <grid row="6" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <text value="Ca 4 (15:30 – 17:30)"/>
-                            </properties>
-                          </component>
-                          <component id="6ac43" class="javax.swing.JTextField" binding="tSoSlotHP">
-                            <constraints>
-                              <grid row="4" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                                <preferred-size width="150" height="-1"/>
-                              </grid>
-                            </constraints>
-                            <properties>
-                              <editable value="true"/>
-                              <enabled value="true"/>
-                              <font size="16" style="0"/>
-                              <text value=""/>
                             </properties>
                           </component>
                           <component id="b3b71" class="javax.swing.JButton" binding="btnResetHP">
@@ -1688,11 +1639,67 @@
                             </constraints>
                             <properties/>
                           </component>
-                          <component id="4b3b5" class="javax.swing.JComboBox" binding="comboBoxMaMon">
+                          <component id="c2e6d" class="javax.swing.JTextField" binding="tMaMonHP">
                             <constraints>
-                              <grid row="0" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                              <grid row="0" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="-1"/>
+                              </grid>
                             </constraints>
-                            <properties/>
+                            <properties>
+                              <editable value="false"/>
+                              <enabled value="true"/>
+                              <font size="16" style="0"/>
+                              <text value=""/>
+                            </properties>
+                          </component>
+                          <component id="d419a" class="javax.swing.JComboBox" binding="comboSoTinChi">
+                            <constraints>
+                              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <editable value="false"/>
+                            </properties>
+                          </component>
+                          <component id="e8a54" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="16" style="0"/>
+                              <foreground color="-16777216"/>
+                              <text value="Số slot:"/>
+                            </properties>
+                          </component>
+                          <component id="b22a2" class="javax.swing.JComboBox" binding="comboTenGiaoVien">
+                            <constraints>
+                              <grid row="2" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <editable value="false"/>
+                            </properties>
+                          </component>
+                          <component id="64c60" class="javax.swing.JTextField" binding="tSoSlotHP">
+                            <constraints>
+                              <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                                <preferred-size width="150" height="-1"/>
+                              </grid>
+                            </constraints>
+                            <properties>
+                              <editable value="true"/>
+                              <enabled value="true"/>
+                              <font size="16" style="0"/>
+                              <text value=""/>
+                            </properties>
+                          </component>
+                          <component id="179fc" class="javax.swing.JLabel">
+                            <constraints>
+                              <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <font size="14" style="2"/>
+                              <foreground color="-4518881"/>
+                              <text value="* Chỉ được nhập số"/>
+                            </properties>
                           </component>
                         </children>
                       </grid>

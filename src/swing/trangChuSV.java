@@ -1,15 +1,25 @@
 package swing;
 
 import com.toedter.calendar.JDateChooser;
+import dao.AccountDAO;
 import dao.ClassStudentDAO;
+import dao.CourseDAO;
+import dao.SinhVienHocPhanDAO;
 import hibernate.AccountsStu;
+import hibernate.Course;
+import hibernate.StudentDkhp;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Calendar;
+import java.util.List;
 
 public class trangChuSV {
     private static AccountsStu acc;
@@ -41,13 +51,33 @@ public class trangChuSV {
     private JButton btnReTT;
     private JPanel jpanelQl;
     private JTextField tLop;
-    private JTable tableDKHP;
+    private JTable tableHocPhan;
     private JLabel lbTen;
     private JLabel lbMk;
     private JLabel lbNS;
     private JLabel lbDC;
     private JLabel lbDt;
     private JLabel lbGT;
+    private JTextField tPhongHocHP;
+    private JTextField tMaMonHP;
+    private JTextField tSoSlotHP;
+    private JButton btnAddHP;
+    private JPanel panelHocPhan;
+    private JTextField tTenMonHp;
+    private JTextField tTenGV;
+    private JTextField tSoTinChi;
+    private JTextField tThu;
+    private JTextField tCa;
+    private JPanel panelMonDaDK;
+    private JTable tableHPdaDK;
+    private JButton btnDelHP;
+    //cho bang đăng ký hp
+    private Course selectedHocPhan;
+    private int selectedIndexHocPhan;
+
+    //cho bang đăng ký hp
+    private Course selectedHocPhanEx;
+    private int selectedIndexHocPhanEx;
 
 
     public trangChuSV() {
@@ -64,6 +94,67 @@ public class trangChuSV {
             close.dispose();
             dangNhap.init();
         });
+
+        showTableHocPhan();
+        showTableHocPhanDadk();
+
+        tableHocPhan.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableHocPhan.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Course> rshp = CourseDAO.getAllCourses();
+                selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
+                selectedHocPhan = rshp.get(selectedIndexHocPhan);
+                if (selectedHocPhan != null) {
+                    tMaMonHP.setText(selectedHocPhan.get_monHoc().getFidMh());
+                    tTenMonHp.setText(selectedHocPhan.get_monHoc().getfTenMh());
+                    tTenGV.setText(AccountDAO.getAccount(selectedHocPhan.getfMaGv()).getfHoTen());
+                    tPhongHocHP.setText(selectedHocPhan.getfPhongHoc());
+                    tSoTinChi.setText(String.valueOf(selectedHocPhan.get_monHoc().getfSoTinChi()));
+                    tSoSlotHP.setText(String.valueOf(selectedHocPhan.getfSoSlot()));
+                    tThu.setText(selectedHocPhan.getfThuHoc());
+                    tCa.setText(String.valueOf(selectedHocPhan.getfCaHoc()));
+                }
+            }
+        });
+        tableHPdaDK.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableHPdaDK.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Course> rshp1 = CourseDAO.getAllCourses();
+                selectedIndexHocPhanEx = tableHPdaDK.convertRowIndexToModel(tableHPdaDK.getSelectedRow());
+                selectedHocPhanEx = rshp1.get(selectedIndexHocPhanEx);
+                if (selectedHocPhanEx != null) {
+                    tMaMonHP.setText(selectedHocPhanEx.get_monHoc().getFidMh());
+                    tTenMonHp.setText(selectedHocPhanEx.get_monHoc().getfTenMh());
+                    tTenGV.setText(AccountDAO.getAccount(selectedHocPhanEx.getfMaGv()).getfHoTen());
+                    tPhongHocHP.setText(selectedHocPhanEx.getfPhongHoc());
+                    tSoTinChi.setText(String.valueOf(selectedHocPhanEx.get_monHoc().getfSoTinChi()));
+                    tSoSlotHP.setText(String.valueOf(selectedHocPhanEx.getfSoSlot()));
+                    tThu.setText(selectedHocPhanEx.getfThuHoc());
+                    tCa.setText(String.valueOf(selectedHocPhanEx.getfCaHoc()));
+                }
+            }
+        });
+        btnAddHP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                java.util.List<Course> rshp = CourseDAO.getAllCourses();
+                selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
+                selectedHocPhan = rshp.get(selectedIndexHocPhan);
+
+                StudentDkhp studentDkhp = new StudentDkhp();
+                studentDkhp.setfMaCourse(selectedHocPhan.getfMaHp());
+                studentDkhp.setfMaTK(acc.getfMaTkSV());
+
+                if (SinhVienHocPhanDAO.isExisted(studentDkhp)) {
+                    showDialogAgain("Học phần đã được đăng ký");
+                } else {
+                    SinhVienHocPhanDAO.save(studentDkhp);
+                    showDialogAgain("Đăng ký thành công");
+                    panelHocPhan.removeAll();
+                    showTableHocPhan();
+                    panelMonDaDK.removeAll();
+                    showTableHocPhanDadk();
+                }
+            }
+        });
     }
 
     public static void init(AccountsStu account) {
@@ -73,6 +164,9 @@ public class trangChuSV {
         frame.setContentPane(new trangChuSV().mainPanelSV);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //frame.setUndecorated(true);
+
         close = frame;
         frame.setVisible(true);
     }
@@ -184,5 +278,148 @@ public class trangChuSV {
         tfMK.setText(acc.getfPass());
     }
 
+    public void showTableHocPhan() {
+        String[] columnsDKHP = new String[]{"Mã môn", "Tên môn", "Số tín chỉ", "Giáo viên", "Thứ học", "Ca học", "Số slot"};
+        TableModel dataModelHP = new
+                AbstractTableModel() {
+                    List<Course> listDkhp = SinhVienHocPhanDAO.getAllCoursesHienTaiChuaDk(acc.getfMaTkSV());
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsDKHP[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 7;
+                    }
+
+                    public int getRowCount() {
+                        return listDkhp.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Course si = listDkhp.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.get_monHoc().getFidMh();
+                            case 1:
+                                return si.get_monHoc().getfTenMh();
+                            case 2:
+                                return si.get_monHoc().getfSoTinChi();
+                            case 3:
+                                return AccountDAO.getAccount(si.getfMaGv()).getfHoTen();
+                            case 4:
+                                return si.getfThuHoc();
+                            case 5:
+                                return si.getfCaHoc();
+                            case 6:
+                                return si.getfSoSlot();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 5:
+                            case 2:
+                            case 6:
+                                return Integer.class;
+                            case 0:
+                            case 1:
+                            case 4:
+                            case 3:
+                                return String.class;
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        if (columnIndex < 1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
+        panelHocPhan.setLayout(new BorderLayout());
+        panelHocPhan.add(tableHocPhan, BorderLayout.CENTER);
+        panelHocPhan.add(new JScrollPane(tableHocPhan));
+        panelHocPhan.add(tableHocPhan.getTableHeader(), BorderLayout.NORTH);
+        tableHocPhan.setAutoCreateRowSorter(true);
+        tableHocPhan.setModel(dataModelHP);
+    }
+
+    public void showTableHocPhanDadk() {
+        String[] columnsDKHP = new String[]{"Mã môn", "Tên môn", "Số tín chỉ", "Giáo viên", "Thứ học", "Ca học", "Số slot"};
+        TableModel dataModelHPdaDk = new
+                AbstractTableModel() {
+                    List<Course> listDkhp = SinhVienHocPhanDAO.getAllCoursesHienTaiDaDk(acc.getfMaTkSV());
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsDKHP[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 7;
+                    }
+
+                    public int getRowCount() {
+                        return listDkhp.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Course si = listDkhp.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.get_monHoc().getFidMh();
+                            case 1:
+                                return si.get_monHoc().getfTenMh();
+                            case 2:
+                                return si.get_monHoc().getfSoTinChi();
+                            case 3:
+                                return AccountDAO.getAccount(si.getfMaGv()).getfHoTen();
+                            case 4:
+                                return si.getfThuHoc();
+                            case 5:
+                                return si.getfCaHoc();
+                            case 6:
+                                return si.getfSoSlot();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 5:
+                            case 2:
+                            case 6:
+                                return Integer.class;
+                            case 0:
+                            case 1:
+                            case 4:
+                            case 3:
+                                return String.class;
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        if (columnIndex < 1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                };
+        panelMonDaDK.setLayout(new BorderLayout());
+        panelMonDaDK.add(tableHPdaDK, BorderLayout.CENTER);
+        panelMonDaDK.add(new JScrollPane(tableHPdaDK));
+        panelMonDaDK.add(tableHPdaDK.getTableHeader(), BorderLayout.NORTH);
+        tableHPdaDK.setAutoCreateRowSorter(true);
+        tableHPdaDK.setModel(dataModelHPdaDk);
+    }
 }
 

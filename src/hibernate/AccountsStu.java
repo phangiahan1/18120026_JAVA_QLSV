@@ -2,6 +2,8 @@ package hibernate;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class AccountsStu implements java.io.Serializable {
@@ -20,6 +22,20 @@ public class AccountsStu implements java.io.Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_maLH")
     private Clazz _lopHoc;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "student_dkhp",
+            joinColumns = {@JoinColumn(name = "f_maTKSV")},
+            inverseJoinColumns = {@JoinColumn(name = "f_maCourse")})
+    private Set<Course> hocPhanList = new HashSet<>();
+
+    public Set<Course> getHocPhanList() {
+        return hocPhanList;
+    }
+
+    public void setHocPhanList(Set<Course> hocPhanList) {
+        this.hocPhanList = hocPhanList;
+    }
 
     @Id
     @Column(name = "f_maTKSV", nullable = false)
@@ -145,4 +161,6 @@ public class AccountsStu implements java.io.Serializable {
     public void set_lopHoc(Clazz _lopHoc) {
         this._lopHoc = _lopHoc;
     }
+
+
 }

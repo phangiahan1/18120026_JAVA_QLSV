@@ -73,9 +73,9 @@ public class DkhpDAO {
         }
     }
 
-    public static void main(String[] args) {
-        for (Dkhp dkhp : DkhpDAO.getAllDKHP()) {
-            System.out.println(dkhp.get_hocki().toString());
-        }
-    }
+//    public static void main(String[] args) {
+//        for (Dkhp dkhp : DkhpDAO.getAllDKHP()) {
+//            System.out.println(dkhp.get_hocki().toString());
+//        }
+//    }
 }

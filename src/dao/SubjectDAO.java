@@ -29,6 +29,46 @@ public class SubjectDAO {
         return subjects;
     }
 
+    public static Subjects getByMaMon(String maMon) {
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Subjects subjects = new Subjects();
+        try {
+            final String hql = "select sj from Subjects sj where sj.fidMh = :ma";
+            Query query = session.createQuery(hql);
+            query.setParameter("ma", maMon);
+
+            //Get all accounts
+            subjects = (Subjects) query.uniqueResult();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return subjects;
+    }
+
+    public static Subjects getByTen(String ten) {
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Subjects subjects = new Subjects();
+        try {
+            final String hql = "select sj from Subjects sj where sj.fTenMh = :ma";
+            Query query = session.createQuery(hql);
+            query.setParameter("ma", ten);
+
+            //Get all accounts
+            subjects = (Subjects) query.uniqueResult();
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return subjects;
+    }
+
     public static boolean isExistedSub(Subjects subjects) {
         boolean kq = false;
         List<Subjects> list = SubjectDAO.getAllSubjects();
@@ -127,7 +167,7 @@ public class SubjectDAO {
     }
 
     public static String[] getTenMonHocList() {
-        String[] li = null;
+        String[] li = new String[SubjectDAO.getAllSubjects().size()];
         int i = 0;
         List<Subjects> list = getAllSubjects();
         for (Subjects subject : list) {
@@ -136,4 +176,11 @@ public class SubjectDAO {
         }
         return li;
     }
+
+//    public static void main(String[] args) {
+//        String[] a = getTenMonHocList();
+//        for (String a1 : a){
+//            System.out.println(a1);
+//        }
+//    }
 }

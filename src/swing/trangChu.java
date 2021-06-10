@@ -8,7 +8,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Calendar;
@@ -175,16 +177,18 @@ public class trangChu {
     private JRadioButton rahpT4;
     private JRadioButton rahpT7;
     private JTextField tPhongHocHP;
-    private JTextField tSoTinChiHP;
-    private JRadioButton ca1730RadioButton;
-    private JRadioButton ca2930RadioButton;
-    private JRadioButton ca31330RadioButton;
-    private JTextField tSoSlotHP;
+    private JRadioButton raCa1;
+    private JRadioButton raCa2;
+    private JRadioButton raCa3;
     private JComboBox comboBoxTenMon;
-    private JComboBox comboBoxMaMon;
     private JButton btnResetHP;
     private JButton btnAddHP;
     private JButton btnDelHP;
+    private JTextField tMaMonHP;
+    private JRadioButton raCa4;
+    private JComboBox comboSoTinChi;
+    private JTextField tSoSlotHP;
+    private JComboBox comboTenGiaoVien;
     //cho bang môn học
     private Subjects selectedSub;
     private int selectedIndexSub;
@@ -194,9 +198,12 @@ public class trangChu {
     //cho bang môn học
     private Clazz selectedClass;
     private int selectedIndexClass;
-    //cho bang đăng ký hp
+    //cho bang đăng ký dkhp
     private Dkhp selectedDkhp;
     private int selectedIndexDkhp;
+    //cho bang đăng ký hp
+    private Course selectedHocPhan;
+    private int selectedIndexHocPhan;
 
     public trangChu() {
         //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
@@ -278,6 +285,7 @@ public class trangChu {
                 showDialogAgain("Edit thành công!!!");
                 panel.removeAll();
                 showTableGiaoVu();
+                initCourse();
                 resetTxt();
             } else {
                 showDialogAgain("Edit không hoàn thành!!!");
@@ -321,6 +329,7 @@ public class trangChu {
                         showDialogAgain("Lưu thành công!!!");
                         panel.removeAll();
                         showTableGiaoVu();
+                        initCourse();
                         resetTxt();
                     } else {
                         showDialogAgain("Lưu không thành công!!!");
@@ -342,6 +351,7 @@ public class trangChu {
                     showDialogAgain("Xóa thành công!!!");
                     panel.removeAll();
                     showTableGiaoVu();
+                    initCourse();
                     resetTxt();
                 } else {
                     showDialogAgain("Xóa không hoàn thành!!!");
@@ -424,6 +434,7 @@ public class trangChu {
                         showDialogAgain("Lưu thành công!!!");
                         panelMH.removeAll();
                         showTableMonHoc();
+                        initCourse();
                         tTenMH.setText("");
                         tMaMH.setText("");
                     } else {
@@ -447,6 +458,7 @@ public class trangChu {
                     showDialogAgain("Xóa thành công!!!");
                     panelMH.removeAll();
                     showTableMonHoc();
+                    initCourse();
                     tTenMH.setText("");
                     tMaMH.setText("");
                 } else {
@@ -490,6 +502,7 @@ public class trangChu {
                     showDialogAgain("Edit thành công!!!");
                     panelMH.removeAll();
                     showTableMonHoc();
+                    initCourse();
                     tTenMH.setText("");
                     tMaMH.setText("");
                 } else {
@@ -539,6 +552,8 @@ public class trangChu {
                     showDialogAgain("Set học kì hiện tại thành công");
                     panelHK.removeAll();
                     showTableHocKi();
+                    panelHocPhan.removeAll();
+                    showTableHocPhan();
                     tNamHK.setText("");
                 } else {
                     showDialogAgain("Set học kì hiện tại không thành công");
@@ -610,6 +625,7 @@ public class trangChu {
                         showDialogAgain("Lưu học kì thành công");
                         panelHK.removeAll();
                         showTableHocKi();
+                        initDKHP();
                         tNamHK.setText("");
                     } else {
                         showDialogAgain("Lưu không thành công");
@@ -751,6 +767,105 @@ public class trangChu {
             selectedDkhp = rsdkhp1.get(selectedIndexDkhp);
 
         });
+
+        //Khởi tạo dữ liệu bảng hoc phần
+        initCourse();
+        tableHocPhan.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableHocPhan.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<Course> rshp = CourseDAO.getAllCourses();
+                selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
+                selectedHocPhan = rshp.get(selectedIndexHocPhan);
+                if (selectedHocPhan != null) {
+                    tMaMonHP.setText(selectedHocPhan.get_monHoc().getFidMh());
+                    comboBoxTenMon.setSelectedItem(selectedHocPhan.get_monHoc().getfTenMh());
+//                    tTenGiaoVienHP.setText(AccountDAO.getAccount(selectedHocPhan.getfMaGv()).getfHoTen());
+                    comboTenGiaoVien.setSelectedItem(AccountDAO.getAccount(selectedHocPhan.getfMaGv()).getfHoTen());
+                    tPhongHocHP.setText(selectedHocPhan.getfPhongHoc());
+                    comboSoTinChi.setSelectedItem(selectedHocPhan.get_monHoc().getfSoTinChi());
+                    tSoSlotHP.setText(String.valueOf(selectedHocPhan.getfSoSlot()));
+                    if (selectedHocPhan.getfThuHoc().equals("Thứ 2")) rahpT2.setSelected(true);
+                    if (selectedHocPhan.getfThuHoc().equals("Thứ 3")) rahpT3.setSelected(true);
+                    if (selectedHocPhan.getfThuHoc().equals("Thứ 4")) rahpT4.setSelected(true);
+                    if (selectedHocPhan.getfThuHoc().equals("Thứ 5")) rahpT5.setSelected(true);
+                    if (selectedHocPhan.getfThuHoc().equals("Thứ 6")) rahpT6.setSelected(true);
+                    if (selectedHocPhan.getfThuHoc().equals("Thứ 7")) rahpT7.setSelected(true);
+
+                    if (selectedHocPhan.getfCaHoc() == 1) raCa1.setSelected(true);
+                    if (selectedHocPhan.getfCaHoc() == 2) raCa2.setSelected(true);
+                    if (selectedHocPhan.getfCaHoc() == 3) raCa3.setSelected(true);
+                    if (selectedHocPhan.getfCaHoc() == 4) raCa4.setSelected(true);
+
+                }
+            }
+        });
+
+        btnResetHP.addActionListener(e -> {
+            ResetTxtHocPhan();
+        });
+        btnAddHP.addActionListener(e -> {
+            Course course = new Course();
+
+            course.setfSoSlot(Integer.parseInt(tSoSlotHP.getText()));
+
+            course.set_monHoc(SubjectDAO.getByTen(comboBoxTenMon.getSelectedItem().toString()));
+            course.set_hocKi(SemesterDAO.findHocKiHienTai());
+
+            if (raCa1.isSelected()) course.setfCaHoc(1);
+            if (raCa2.isSelected()) course.setfCaHoc(2);
+            if (raCa3.isSelected()) course.setfCaHoc(3);
+            if (raCa4.isSelected()) course.setfCaHoc(4);
+
+            if (rahpT2.isSelected()) course.setfThuHoc("Thứ 2");
+            if (rahpT3.isSelected()) course.setfThuHoc("Thứ 3");
+            if (rahpT4.isSelected()) course.setfThuHoc("Thứ 4");
+            if (rahpT5.isSelected()) course.setfThuHoc("Thứ 5");
+            if (rahpT6.isSelected()) course.setfThuHoc("Thứ 6");
+            if (rahpT7.isSelected()) course.setfThuHoc("Thứ 7");
+
+            Accounts accounts = AccountDAO.getAccountbyName(comboTenGiaoVien.getSelectedItem().toString());
+
+            course.setfMaGv(accounts.getfMaTk());
+            course.setfMaHk(SemesterDAO.findHocKiHienTai().getfMaHk());
+            course.setfPhongHoc(tPhongHocHP.getText());
+            course.setfMaMH(SubjectDAO.getByTen(comboBoxTenMon.getSelectedItem().toString()).getfMaMh());
+
+            if (tPhongHocHP.getText().equals("") && comboSoTinChi.getSelectedItem().toString().equals("")
+                    && comboBoxTenMon.getSelectedItem().toString().equals("") || comboTenGiaoVien.getSelectedItem().toString().equals("")
+                    && tSoSlotHP.getText().equals("")) {
+                showDialogAgain("Vui lòng điền đầy đủ thông tin");
+            } else {
+                if (!CourseDAO.isExisted(course)) {
+                    if (showDialog()) {
+                        if (CourseDAO.saveCourse(course)) {
+                            showDialogAgain("Thêm học thành công");
+                            panelHocPhan.removeAll();
+                            showTableHocPhan();
+                            ResetTxtHocPhan();
+                        } else showDialogAgain("Thêm học phần không thành công");
+                    } else showDialogAgain("Thêm học phần không thành công");
+                } else showDialogAgain("Học phần đã tồn tại");
+            }
+
+        });
+        btnDelHP.addActionListener(e -> {
+            java.util.List<Course> rshp2 = CourseDAO.getAllCoursesHienTai();
+            selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
+            selectedHocPhan = rshp2.get(selectedIndexHocPhan);
+
+//            if (selectedHocPhan.getF_tongSV() != 0) {
+//                showDialogAgain("Lớp học có học sinh không thể xóa");
+//            } else {
+            if (showDialogDelete()) {
+                CourseDAO.deleteCourse(selectedHocPhan);
+                showDialogAgain("Xóa thành công");
+                panelHocPhan.removeAll();
+                showTableHocPhan();
+                ResetTxtHocPhan();
+            } else {
+                showDialogAgain("Xóa không thành công");
+            }
+            //}
+        });
     }
 
     //Hàm init ban đầu
@@ -875,9 +990,39 @@ public class trangChu {
     //init Courses
     public void initCourse() {
         showTableHocPhan();
-        String[] tenMonHocList = SubjectDAO.getTenMonHocList();
-        comboBoxTenMon = new JComboBox(tenMonHocList);
-        //chua xong
+        for (Subjects subjects : SubjectDAO.getAllSubjects()) {
+            comboBoxTenMon.addItem(subjects.getfTenMh());
+        }
+        ActionListener actionListenerForTenMon = e -> {
+            String s = (String) comboBoxTenMon.getSelectedItem();
+            comboSoTinChi.setSelectedItem(SubjectDAO.getByTen(s).getfSoTinChi());
+            tMaMonHP.setText(SubjectDAO.getByTen(s).getFidMh());
+        };
+        comboBoxTenMon.addActionListener(actionListenerForTenMon);
+        for (int i = 1; i < 7; i++) {
+            comboSoTinChi.addItem(i);
+        }
+
+
+        for (Accounts accounts : AccountDAO.getAllAccountsGiaoVien()) {
+            comboTenGiaoVien.addItem(accounts.getfHoTen());
+        }
+
+        ButtonGroup buttonGroupCaHoc = new ButtonGroup();
+        buttonGroupCaHoc.add(raCa1);
+        buttonGroupCaHoc.add(raCa2);
+        buttonGroupCaHoc.add(raCa3);
+        buttonGroupCaHoc.add(raCa4);
+        ButtonGroup buttonGroupThuHoc = new ButtonGroup();
+        buttonGroupThuHoc.add(rahpT2);
+        buttonGroupThuHoc.add(rahpT3);
+        buttonGroupThuHoc.add(rahpT4);
+        buttonGroupThuHoc.add(rahpT5);
+        buttonGroupThuHoc.add(rahpT6);
+        buttonGroupThuHoc.add(rahpT7);
+
+        PlainDocument doc = (PlainDocument) tSoSlotHP.getDocument();
+        doc.setDocumentFilter(new MyIntFilter());
     }
 
     //------------------------Các hàm và menu Panel---------------------------------------------------------------------
@@ -1403,7 +1548,7 @@ public class trangChu {
     //------------------------Các hàm cho quản lý Hoc phan------------------------------------------------------------------
     //show table học kì
     public void showTableHocPhan() {
-        String[] columnsDKHP = new String[]{"Mã môn", "Tên môn", "Số tín chỉ", "Giáo viên", "Thứ học", "Ca học"};
+        String[] columnsDKHP = new String[]{"Mã môn", "Tên môn", "Số tín chỉ", "Giáo viên", "Thứ học", "Ca học", "Số slot"};
         TableModel dataModelHP = new
                 AbstractTableModel() {
                     List<Course> listDkhp = CourseDAO.getAllCoursesHienTai();
@@ -1413,7 +1558,7 @@ public class trangChu {
                     }
 
                     public int getColumnCount() {
-                        return 6;
+                        return 7;
                     }
 
                     public int getRowCount() {
@@ -1435,6 +1580,8 @@ public class trangChu {
                                 return si.getfThuHoc();
                             case 5:
                                 return si.getfCaHoc();
+                            case 6:
+                                return si.getfSoSlot();
                         }
                         return null;
                     }
@@ -1444,6 +1591,7 @@ public class trangChu {
                         switch (columnIndex) {
                             case 5:
                             case 2:
+                            case 6:
                                 return Integer.class;
                             case 0:
                             case 1:
@@ -1460,5 +1608,86 @@ public class trangChu {
         panelHocPhan.add(tableHocPhan.getTableHeader(), BorderLayout.NORTH);
         tableHocPhan.setAutoCreateRowSorter(true);
         tableHocPhan.setModel(dataModelHP);
+    }
+
+    public void ResetTxtHocPhan() {
+        tMaMonHP.setText("");
+        tPhongHocHP.setText("");
+        comboSoTinChi.setSelectedIndex(-1);
+        comboTenGiaoVien.setSelectedIndex(-1);
+        comboBoxTenMon.setSelectedItem(null);
+        tSoSlotHP.setText("");
+        rahpT2.setSelected(true);
+        raCa1.setSelected(true);
+    }
+
+    //Code tham kháo https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
+    //Dùng để chỉ cho phép nhập số vào khung Số slot môn học
+    class MyIntFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string,
+                                 AttributeSet attr) throws BadLocationException {
+
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.insert(offset, string);
+
+            if (test(sb.toString())) {
+                super.insertString(fb, offset, string, attr);
+            } else {
+                // warn the user and don't allow the insert
+            }
+        }
+
+        private boolean test(String text) {
+            try {
+                Integer.parseInt(text);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text,
+                            AttributeSet attrs) throws BadLocationException {
+
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.replace(offset, offset + length, text);
+
+            if (test(sb.toString())) {
+                super.replace(fb, offset, length, text, attrs);
+            } else {
+                // warn the user and don't allow the insert
+            }
+
+        }
+
+        @Override
+        public void remove(FilterBypass fb, int offset, int length)
+                throws BadLocationException {
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.delete(offset, offset + length);
+
+//            if (test(sb.toString())) {
+//                super.remove(fb, offset, length);
+//            } else {
+//                // warn the user and don't allow the insert
+//            }
+            if (sb.toString().length() == 0) {
+                super.replace(fb, offset, length, "", null);
+            } else {
+                if (test(sb.toString())) {
+                    super.remove(fb, offset, length);
+                } else {
+                    // warn the user and don't allow the insert
+                }
+            }
+        }
     }
 }

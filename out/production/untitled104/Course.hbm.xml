@@ -14,6 +14,9 @@
         <property name="fMaMH">
             <column name="f_maMH" sql-type="int(11)" not-null="true"/>
         </property>
+        <property name="fMaGv">
+            <column name="f_idGV" sql-type="int(11)" not-null="true"/>
+        </property>
         <property name="fPhongHoc">
             <column name="f_phongHoc" sql-type="varchar(255)" not-null="true"/>
         </property>
@@ -22,6 +25,9 @@
         </property>
         <property name="fThuHoc">
             <column name="f_thuHoc" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="fSoSlot">
+            <column name="f_soSlot" sql-type="int(11)" not-null="true"/>
         </property>
     </class>
 </hibernate-mapping>
