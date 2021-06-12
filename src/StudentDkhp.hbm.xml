@@ -14,5 +14,8 @@
         <property name="fMaTK">
             <column name="f_maTKSV" sql-type="int(11)"/>
         </property>
+        <property name="fngayDKhp">
+            <column name="f_ngayDKhp" sql-type="date" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

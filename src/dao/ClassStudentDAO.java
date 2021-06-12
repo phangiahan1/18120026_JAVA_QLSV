@@ -4,6 +4,7 @@ import hibernate.AccountsStu;
 import hibernate.Clazz;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
@@ -75,7 +76,12 @@ public class ClassStudentDAO {
     public static List<AccountsStu> getAcc_Lop(String maLop) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
+        if (maLop == "all") {
+            return ClassStudentDAO.getAllAcc();
+        }
         Clazz clazz = ClazzDAO.getClassTen(maLop);
+
+        List<AccountsStu> accountsStus1 = ClassStudentDAO.getAllAcc();
 
         List<AccountsStu> accountsStus = null;
         try {
@@ -132,6 +138,61 @@ public class ClassStudentDAO {
         return accountsStu;
     }
 
+    public static boolean isExistedAcc(AccountsStu accounts) {
+        boolean kq = false;
+        List<AccountsStu> list = ClassStudentDAO.getAllAcc();
+        for (AccountsStu accounts1 : list) {
+            if (accounts1.getfTaiKhoan().equals(accounts.getfTaiKhoan())) {
+                kq = true;
+            }
+        }
+        return kq;
+    }
+
+    public static boolean saveAccount(AccountsStu accounts) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        if (ClassStudentDAO.isExistedAcc(accounts)) {
+            return false;
+        }
+        boolean kq = true;
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.save(accounts);
+
+            transaction.commit();
+        } catch (HibernateException ex) {
+            transaction.rollback();
+            System.err.println(ex);
+            kq = false;
+        } finally {
+            session.close();
+        }
+        return kq;
+    }
+
+    public static void deleteAccount(AccountsStu acc) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            //Remove a persistent object
+            if (acc != null) {
+                session.remove(acc);
+                System.out.println("Xoa thanh cong ");
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 
     public static void main(String[] args) {
         List<AccountsStu> list = ClassStudentDAO.getAllAcc();

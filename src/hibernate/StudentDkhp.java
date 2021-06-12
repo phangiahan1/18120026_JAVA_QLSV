@@ -4,13 +4,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Objects;
+import java.util.Date;
 
 @Entity
 public class StudentDkhp {
     private int fMaHSHP;
     private int fMaCourse;
     private int fMaTK;
+    private Date fngayDKhp;
 
     @Id
     @Column(name = "f_maHSHP", nullable = false)
@@ -42,6 +43,16 @@ public class StudentDkhp {
         this.fMaTK = fMaTK;
     }
 
+    @Basic
+    @Column(name = "f_ngayDKhp", nullable = false)
+    public Date getFngayDKhp() {
+        return fngayDKhp;
+    }
+
+    public void setFngayDKhp(Date fngayDKhp) {
+        this.fngayDKhp = fngayDKhp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,16 +62,12 @@ public class StudentDkhp {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(fMaHSHP, fMaCourse, fMaTK);
-    }
-
-    @Override
     public String toString() {
         return "StudentDkhp{" +
                 "fMaHSHP=" + fMaHSHP +
                 ", fMaCourse=" + fMaCourse +
                 ", fMaTK=" + fMaTK +
+                ", fngayDKhp=" + fngayDKhp +
                 '}';
     }
 }

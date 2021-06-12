@@ -3,7 +3,7 @@ package swing;
 import com.toedter.calendar.JDateChooser;
 import dao.AccountDAO;
 import dao.ClassStudentDAO;
-import dao.CourseDAO;
+import dao.DkhpDAO;
 import dao.SinhVienHocPhanDAO;
 import hibernate.AccountsStu;
 import hibernate.Course;
@@ -14,8 +14,6 @@ import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Calendar;
@@ -71,6 +69,11 @@ public class trangChuSV {
     private JPanel panelMonDaDK;
     private JTable tableHPdaDK;
     private JButton btnDelHP;
+    private JTextField tMonDaChon;
+    private JTextField tNgaykt;
+    private JLabel TNgayHomNay;
+    private JTextField tNgaybd;
+    private JPanel panelTTHP;
     //cho bang đăng ký hp
     private Course selectedHocPhan;
     private int selectedIndexHocPhan;
@@ -100,7 +103,7 @@ public class trangChuSV {
 
         tableHocPhan.getSelectionModel().addListSelectionListener(e -> {
             if (!tableHocPhan.getSelectionModel().isSelectionEmpty()) {
-                java.util.List<Course> rshp = CourseDAO.getAllCourses();
+                java.util.List<Course> rshp = SinhVienHocPhanDAO.getAllCoursesHienTaiChuaDk(acc.getfMaTkSV());
                 selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
                 selectedHocPhan = rshp.get(selectedIndexHocPhan);
                 if (selectedHocPhan != null) {
@@ -117,44 +120,72 @@ public class trangChuSV {
         });
         tableHPdaDK.getSelectionModel().addListSelectionListener(e -> {
             if (!tableHPdaDK.getSelectionModel().isSelectionEmpty()) {
-                java.util.List<Course> rshp1 = CourseDAO.getAllCourses();
+                java.util.List<Course> rshp1 = SinhVienHocPhanDAO.getAllCoursesHienTaiDaDk(acc.getfMaTkSV());
                 selectedIndexHocPhanEx = tableHPdaDK.convertRowIndexToModel(tableHPdaDK.getSelectedRow());
                 selectedHocPhanEx = rshp1.get(selectedIndexHocPhanEx);
                 if (selectedHocPhanEx != null) {
-                    tMaMonHP.setText(selectedHocPhanEx.get_monHoc().getFidMh());
-                    tTenMonHp.setText(selectedHocPhanEx.get_monHoc().getfTenMh());
-                    tTenGV.setText(AccountDAO.getAccount(selectedHocPhanEx.getfMaGv()).getfHoTen());
-                    tPhongHocHP.setText(selectedHocPhanEx.getfPhongHoc());
-                    tSoTinChi.setText(String.valueOf(selectedHocPhanEx.get_monHoc().getfSoTinChi()));
-                    tSoSlotHP.setText(String.valueOf(selectedHocPhanEx.getfSoSlot()));
-                    tThu.setText(selectedHocPhanEx.getfThuHoc());
-                    tCa.setText(String.valueOf(selectedHocPhanEx.getfCaHoc()));
+                    tMonDaChon.setText(selectedHocPhanEx.get_monHoc().getfTenMh());
                 }
             }
         });
-        btnAddHP.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                java.util.List<Course> rshp = CourseDAO.getAllCourses();
-                selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
-                selectedHocPhan = rshp.get(selectedIndexHocPhan);
+        btnAddHP.addActionListener(e -> {
+            List<Course> rshp = SinhVienHocPhanDAO.getAllCoursesHienTaiChuaDk(acc.getfMaTkSV());
+            selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
+            selectedHocPhan = rshp.get(selectedIndexHocPhan);
 
-                StudentDkhp studentDkhp = new StudentDkhp();
-                studentDkhp.setfMaCourse(selectedHocPhan.getfMaHp());
-                studentDkhp.setfMaTK(acc.getfMaTkSV());
+            //StudentDkhp studentDkhp = SinhVienHocPhanDAO.getHp_svDk(acc.getfMaTkSV(),selectedHocPhan.getfMaHp());
+            StudentDkhp studentDkhp = new StudentDkhp();
+            studentDkhp.setfMaCourse(selectedHocPhan.getfMaHp());
+            studentDkhp.setFngayDKhp(today.getTime());
+//            //showDialogAgain(String.valueOf(selectedHocPhan.getfMaHp()));
+            studentDkhp.setfMaTK(acc.getfMaTkSV());
 
+            if (SinhVienHocPhanDAO.getAllCoursesHienTaiDaDk(acc.getfMaTkSV()).size() < 9) {
                 if (SinhVienHocPhanDAO.isExisted(studentDkhp)) {
                     showDialogAgain("Học phần đã được đăng ký");
                 } else {
-                    SinhVienHocPhanDAO.save(studentDkhp);
-                    showDialogAgain("Đăng ký thành công");
-                    panelHocPhan.removeAll();
-                    showTableHocPhan();
-                    panelMonDaDK.removeAll();
-                    showTableHocPhanDadk();
+                    if (!SinhVienHocPhanDAO.kiemTraTrungTen(studentDkhp)) {
+                        if (SinhVienHocPhanDAO.kiemTraTrungGio(studentDkhp)) {
+                            showDialogAgain("Không thể đăng ký trùng giờ học");
+                        } else {
+                            if (showDialog()) {
+                                SinhVienHocPhanDAO.save(studentDkhp);
+                                showDialogAgain("Đăng ký thành công");
+                                panelHocPhan.removeAll();
+                                showTableHocPhan();
+                                panelMonDaDK.removeAll();
+                                showTableHocPhanDadk();
+                            } else showDialogAgain("Thêm không thành công");
+                        }
+                    } else showDialogAgain("Đã đăng ký môn học này");
                 }
+            } else showDialogAgain("Bạn đã đăng ký đủ 8 học phần");
+        });
+        btnDelHP.addActionListener(e -> {
+            List<Course> rshp1 = SinhVienHocPhanDAO.getAllCoursesHienTaiDaDk(acc.getfMaTkSV());
+            selectedIndexHocPhanEx = tableHPdaDK.convertRowIndexToModel(tableHPdaDK.getSelectedRow());
+            selectedHocPhanEx = rshp1.get(selectedIndexHocPhanEx);
+
+            StudentDkhp studentDkhp1 = SinhVienHocPhanDAO.getHp_svDk(acc.getfMaTkSV(), selectedHocPhanEx.getfMaHp());
+//            studentDkhp1.setfMaCourse(selectedHocPhanEx.getfMaHp());
+//            studentDkhp1.setfMaTK(acc.getfMaTkSV());
+
+            if (showDialogDelete()) {
+                SinhVienHocPhanDAO.delete(studentDkhp1);
+                showDialogAgain("Xóa thành công thành công");
+                panelHocPhan.removeAll();
+                showTableHocPhan();
+                panelMonDaDK.removeAll();
+                showTableHocPhanDadk();
             }
         });
+
+    }
+
+    private boolean showDialogDelete() {
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "!!! Hành động này sẽ xóa thông tin trong CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
     }
 
     public static void init(AccountsStu account) {
@@ -181,6 +212,24 @@ public class trangChuSV {
     //Hàm init Trang chủ + Thông tin cá nhân
     public void initALL() {
         //set text cho thong tin ca nhan
+
+        TNgayHomNay.setText(String.valueOf(today.getTime()));
+        tNgaybd.setText(String.valueOf(DkhpDAO.getKiDKHP().getfNgayDbdk()));
+        tNgaykt.setText(String.valueOf(DkhpDAO.getKiDKHP().getfNgayKtdk()));
+
+        if (today.getTime().before(DkhpDAO.getKiDKHP().getfNgayDbdk())) {
+            showDialogAgain("Chưa đến ngày đăng ký học phần");
+            showDialogAgain("Quá hạn đăng ký học phần");
+            panelTTHP.setVisible(false);
+            btnDelHP.setVisible(false);
+            panelHocPhan.setVisible(false);
+        }
+        if (today.getTime().after(DkhpDAO.getKiDKHP().getfNgayKtdk())) {
+            showDialogAgain("Quá hạn đăng ký học phần");
+            panelTTHP.setVisible(false);
+            btnDelHP.setVisible(false);
+            panelHocPhan.setVisible(false);
+        }
 
         addActionToMenuLabels();
         lbName.setText(acc.getfTaiKhoan());
@@ -348,6 +397,12 @@ public class trangChuSV {
         panelHocPhan.add(tableHocPhan.getTableHeader(), BorderLayout.NORTH);
         tableHocPhan.setAutoCreateRowSorter(true);
         tableHocPhan.setModel(dataModelHP);
+    }
+
+    private boolean showDialog() {
+        int dialogResult = JOptionPane.showConfirmDialog(null,
+                "!!! Hành động này sẽ lưu thông tin xuống CDSL !!!", "Thông báo", JOptionPane.YES_NO_OPTION);
+        return dialogResult == JOptionPane.YES_OPTION;
     }
 
     public void showTableHocPhanDadk() {

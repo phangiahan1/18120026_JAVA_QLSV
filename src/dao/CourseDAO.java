@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDAO {
@@ -61,6 +62,21 @@ public class CourseDAO {
             session.close();
         }
         return courses;
+    }
+
+    public static Course get(int fmaHP) {
+        Course acc = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            acc = session.get(Course.class, fmaHP);
+            acc.set_monHoc(SubjectDAO.getSubject(acc.getfMaMH()));
+
+        } catch (HibernateException e) {
+            System.err.println();
+        } finally {
+            session.close();
+        }
+        return acc;
     }
 
     public static boolean isExisted(Course accounts) {
@@ -132,22 +148,40 @@ public class CourseDAO {
         }
     }
 
-    public static Course findHP(int maHK) {
-        //open session
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
-        Course semesters = new Course();
-        try {
-            final String hql = "select acc from Course acc where acc.fMaHk = :so";
-            Query query = session.createQuery(hql);
-            query.setParameter("so", maHK);
-            semesters = (Course) query.uniqueResult();
-        } catch (HibernateException e) {
-            System.err.println(e);
-        } finally {
-            session.close();
+    public static Course findHPbyName(String maHK) {
+        Course course = new Course();
+        List<Course> list = getAllHocPhanByTenMonHienTai(maHK);
+        for (Course c : list) {
+            if (c.get_monHoc().getfTenMh().equals(maHK)) ;
+            return c;
         }
-        return semesters;
+        return course;
+        //open session
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//
+//        Course semesters = new Course();
+//        try {
+//            final String hql = "select acc from Course acc where acc._monHoc.fTenMh = :so";
+//            Query query = session.createQuery(hql);
+//            query.setParameter("so", maHK);
+//            semesters = (Course) query.uniqueResult();
+//        } catch (HibernateException e) {
+//            System.err.println(e);
+//        } finally {
+//            session.close();
+//        }
+//        return semesters;
+    }
+
+    public static List<Course> getAllHocPhanByTenMonHienTai(String tenMon) {
+        List<Course> courses = getAllCoursesHienTai();
+        List<Course> kq = new ArrayList<Course>();
+        for (Course course : courses) {
+            if (course.get_monHoc().getfTenMh().equals(tenMon)) {
+                kq.add(course);
+            }
+        }
+        return kq;
     }
 
     public static void main(String[] args) {

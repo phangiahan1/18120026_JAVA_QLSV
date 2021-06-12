@@ -35,6 +35,32 @@ public class DkhpDAO {
         return dkhps;
     }
 
+    public static Dkhp getKiDKHP() {
+
+        //open session
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Dkhp> list = getAllDKHP();
+        Dkhp dkhps = new Dkhp();
+        int Ma = SemesterDAO.findHocKiHienTai().getfMaHk();
+//        for(Dkhp dkhp : list){
+//            if(dkhp.get_hocki())
+//        }
+        try {
+            final String hql = "select acc from Dkhp acc where acc.fMaHK = :ma";
+            Query query = session.createQuery(hql);
+            query.setParameter("ma", Ma);
+
+            //Get all accounts
+            dkhps = (Dkhp) query.uniqueResult();
+
+        } catch (HibernateException e) {
+            System.err.println(e);
+        } finally {
+            session.close();
+        }
+        return dkhps;
+    }
+
     public static void updateDkhp(Dkhp dkhp) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -72,6 +98,33 @@ public class DkhpDAO {
             }
         }
     }
+
+    public static boolean saveSemDkhp(Dkhp dkhp) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        boolean kq = true;
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.save(dkhp);
+
+            transaction.commit();
+        } catch (HibernateException ex) {
+            transaction.rollback();
+            System.err.println(ex);
+            kq = false;
+        } finally {
+            session.close();
+        }
+        return kq;
+    }
+
+//    public static boolean findKiDangDienRa(Dkhp dkhp){
+//        boolean kq = false;
+//        if(dkhp.getfMaHK() == SemesterDAO.findHocKiHienTai().getfMaHk()){
+//
+//        }
+//        return kq;
+//    }
 
 //    public static void main(String[] args) {
 //        for (Dkhp dkhp : DkhpDAO.getAllDKHP()) {

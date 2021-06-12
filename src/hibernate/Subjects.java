@@ -62,6 +62,17 @@ public class Subjects {
         return _listHocPhan;
     }
 
+    @Override
+    public String toString() {
+        return "Subjects{" +
+                "fMaMh=" + fMaMh +
+                ", fidMh='" + fidMh + '\'' +
+                ", fTenMh='" + fTenMh + '\'' +
+                ", fSoTinChi=" + fSoTinChi +
+                ", _listHocPhan=" + _listHocPhan +
+                '}';
+    }
+
     public void set_listHocPhan(List<Course> _listHocPhan) {
         this._listHocPhan = _listHocPhan;
     }

@@ -6,8 +6,11 @@ import hibernate.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -18,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 public class trangChu {
+    private static JFrame close;
     private static Accounts acc = null;
     java.util.List<Accounts> rs = AccountDAO.getAllAccounts();
     java.util.List<Accounts> rsGV = null;
@@ -28,6 +32,9 @@ public class trangChu {
     JDateChooser dateChooserGv;
     Calendar today = Calendar.getInstance();
 
+    //datechosser sv
+    JDateChooser dateChooserSv;
+
     //datechooser hk
     JDateChooser dateChooserBD;
     JDateChooser dateChooserKT;
@@ -35,6 +42,9 @@ public class trangChu {
     //datechooser dkhp
     JDateChooser dateChooserBDdkhp;
     JDateChooser dateChooserKTdkhp;
+
+    JDateChooser dateChooserBDdkhp1;
+    JDateChooser dateChooserKTdkhp1;
     //create array of jLabel
     JLabel[] menuLabels = new JLabel[9];
     //creat array of jPanel
@@ -149,13 +159,11 @@ public class trangChu {
     private JTextField tTaiKhoanSV;
     private JTextField tTenSV;
     private JPasswordField tMKSV;
-    private JTextField tLopSV;
     private JPanel panelNgaySinhSV;
     private JTextField tDiaChiSV;
     private JTextField tDTSinhVien;
     private JRadioButton raNamSV;
     private JRadioButton raNuSV;
-    private JPanel tMonDK;
     private JTable tableHocPhan;
     private JPanel panelHocPhan;
     private JButton btnXoaDkhp;
@@ -189,6 +197,20 @@ public class trangChu {
     private JComboBox comboSoTinChi;
     private JTextField tSoSlotHP;
     private JComboBox comboTenGiaoVien;
+    private JPanel panelSinhVien;
+    private JComboBox comboTenLop;
+    private JTextField tSearchSV;
+    private JTable tableMonCuaSV;
+    private JPanel panelMonCuaSV;
+    private JButton btnThemSV;
+    private JButton btnXoaSV;
+    private JButton btnResetSV;
+    private JPanel panelNgayBDkhpHT;
+    private JPanel panelNgayKTkhpHT;
+    private JTable tableHPSvDk;
+    private JPanel panelHPSvDk;
+    private JPanel panelHPSvDkSearch;
+    private JTextField tSVHPsearch;
     //cho bang môn học
     private Subjects selectedSub;
     private int selectedIndexSub;
@@ -204,10 +226,20 @@ public class trangChu {
     //cho bang đăng ký hp
     private Course selectedHocPhan;
     private int selectedIndexHocPhan;
+    //cho bang sinh viên
+    private AccountsStu selectedSV;
+    private int selectedIndexSV;
+    //Search sv
+    private TableRowSorter sorter;
+    private TableRowSorter sorter1;
 
     public trangChu() {
         //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
         initALL();
+        btnDangXuat.addActionListener(e -> {
+            close.dispose();
+            dangNhap.init();
+        });
         //btn Thông tin cá nhân
         btnEditThongTin.addActionListener(e -> {
             editThongTinCaNhan.init(acc);
@@ -359,8 +391,6 @@ public class trangChu {
                 }
             }
         });
-
-        //Khởi tạo dữ liệu cho bảng sinh viên
 
         //Khởi tạo dữ liệu cho bảng môn học
         initMonHoc();
@@ -554,7 +584,13 @@ public class trangChu {
                     showTableHocKi();
                     panelHocPhan.removeAll();
                     showTableHocPhan();
+                    initDKHP();
+                    showTableDKHP();
                     tNamHK.setText("");
+
+                    //mới thêm
+                    panelMonCuaSV.removeAll();
+                    showTableSinhVienMonDaDK(selectedSV.getfMaTkSV());
                 } else {
                     showDialogAgain("Set học kì hiện tại không thành công");
                     tNamHK.setText("");
@@ -765,6 +801,38 @@ public class trangChu {
             java.util.List<Dkhp> rsdkhp1 = DkhpDAO.getAllDKHP();
             selectedIndexDkhp = tableDKHP.convertRowIndexToModel(tableDKHP.getSelectedRow());
             selectedDkhp = rsdkhp1.get(selectedIndexDkhp);
+            if (DkhpDAO.getKiDKHP().getfMaDkhp() == selectedDkhp.getfMaDkhp()) {
+                showDialogAgain("Kì đăng ký đang diễn ra không thể xóa");
+            } else {
+                if (showDialogDelete()) {
+                    DkhpDAO.deleteDkhp(selectedDkhp);
+                    panelDKHP.removeAll();
+                    showTableDKHP();
+                    resetTXTdkhp();
+                } else showDialogAgain("Xóa không thành công");
+            }
+        });
+        btnThemDkhp.addActionListener(e -> {
+            Dkhp dkhp = new Dkhp();
+            dkhp.set_hocki(SemesterDAO.findHocKiHienTai());
+            dkhp.setfMaHK(SemesterDAO.findHocKiHienTai().getfMaHk());
+            java.util.Date utilDateSV = dateChooserBDdkhp1.getDate();
+            java.sql.Date sqlDatebd = new java.sql.Date(utilDateSV.getTime());
+            dkhp.setfNgayDbdk(sqlDatebd);
+            java.util.Date utilDateSV1 = dateChooserKTdkhp1.getDate();
+            java.sql.Date sqlDatekt = new java.sql.Date(utilDateSV1.getTime());
+            dkhp.setfNgayKtdk(sqlDatekt);
+            if (DkhpDAO.getKiDKHP() != null) {
+                showDialogAgain("Học kì đã có kì kì đăng kí học phần");
+            } else {
+                if (showDialog()) {
+                    if (DkhpDAO.saveSemDkhp(dkhp)) {
+                        showDialogAgain("Thêm thành công");
+                        panelDKHP.removeAll();
+                        showTableDKHP();
+                    }
+                }
+            }
 
         });
 
@@ -772,7 +840,7 @@ public class trangChu {
         initCourse();
         tableHocPhan.getSelectionModel().addListSelectionListener(e -> {
             if (!tableHocPhan.getSelectionModel().isSelectionEmpty()) {
-                java.util.List<Course> rshp = CourseDAO.getAllCourses();
+                java.util.List<Course> rshp = CourseDAO.getAllCoursesHienTai();
                 selectedIndexHocPhan = tableHocPhan.convertRowIndexToModel(tableHocPhan.getSelectedRow());
                 selectedHocPhan = rshp.get(selectedIndexHocPhan);
                 if (selectedHocPhan != null) {
@@ -866,6 +934,90 @@ public class trangChu {
             }
             //}
         });
+
+        //Khởi tạo dữ liệu cho bảng sinh viên
+        initSinhVien();
+        tableSinhVien.getSelectionModel().addListSelectionListener(e -> {
+            if (!tableSinhVien.getSelectionModel().isSelectionEmpty()) {
+                java.util.List<AccountsStu> rssv = ClassStudentDAO.getAllAcc();
+                selectedIndexSV = tableSinhVien.convertRowIndexToModel(tableSinhVien.getSelectedRow());
+                selectedSV = rssv.get(selectedIndexSV);
+                if (selectedSV != null) {
+                    tTaiKhoanSV.setText(selectedSV.getfTaiKhoan());
+                    tTenSV.setText(selectedSV.getfHoTen());
+                    tMKSV.setText(selectedSV.getfPass());
+                    comboTenLop.setSelectedItem(selectedSV.get_lopHoc().getfTenLh());
+                    dateChooserSv.setDate(selectedSV.getfNgaySinh());
+                    tDiaChiSV.setText(selectedSV.getfDiaChi());
+                    tDTSinhVien.setText(selectedSV.getfDienThoai());
+                    if (selectedSV.getfGioiTinh().equals("Nam")) {
+                        raNamSV.setSelected(true);
+                    } else raNuSV.setSelected(true);
+                }
+                panelMonCuaSV.removeAll();
+                showTableSinhVienMonDaDK(selectedSV.getfMaTkSV());
+            }
+        });
+        btnThemSV.addActionListener(e -> {
+            AccountsStu accountsStu = new AccountsStu();
+            accountsStu.setfHoTen(tTenSV.getText());
+            accountsStu.setfTaiKhoan(tTaiKhoanSV.getText());
+            accountsStu.setfType(3);
+            accountsStu.setfPass(String.valueOf(tMKSV.getPassword()));
+            accountsStu.setfDienThoai(tDTSinhVien.getText());
+            accountsStu.setfDiaChi(tDiaChiSV.getText());
+            if (raNamSV.isSelected())
+                accountsStu.setfGioiTinh("Nam");
+            else
+                accountsStu.setfGioiTinh("Nữ");
+            java.util.Date utilDateSV = dateChooserSv.getDate();
+            java.sql.Date sqlDate = new java.sql.Date(utilDateSV.getTime());
+            accountsStu.setfNgaySinh(sqlDate);
+            accountsStu.set_lopHoc(ClazzDAO.getClassTen(comboTenLop.getSelectedItem().toString()));
+            accountsStu.setfMaLop(ClazzDAO.getClassTen(comboTenLop.getSelectedItem().toString()).getfMaLh());
+            if (tTenSV.getText().equals("") || String.valueOf(tMKSV.getPassword()).equals("") || comboTenLop.getSelectedItem().toString().equals("")) {
+                showDialogAgain("Vui lòng nhập đầy đủ thông tin");
+            } else {
+                if (ClassStudentDAO.isExistedAcc(accountsStu)) {
+                    showDialogAgain("Tài khoản đã tồn tại");
+                } else {
+                    if (showDialog()) {
+                        if (ClassStudentDAO.saveAccount(accountsStu)) {
+                            showDialogAgain("Thên thành công");
+                            panelSinhVien.removeAll();
+                            showTableSinhVienAll();
+                            panelLH.removeAll();
+                            showTableLop();
+                            resetTxtSinhVien();
+                        } else showDialogAgain("Thêm sinh viên thất bại");
+                    } else showDialogAgain("Thêm sinh viên thất bại");
+                }
+            }
+        });
+        btnXoaSV.addActionListener(e -> {
+            java.util.List<AccountsStu> rssv = ClassStudentDAO.getAllAcc();
+            selectedIndexSV = tableSinhVien.convertRowIndexToModel(tableSinhVien.getSelectedRow());
+            selectedSV = rssv.get(selectedIndexSV);
+
+            if (selectedSV != null) {
+                if (showDialogDelete()) {
+                    ClassStudentDAO.deleteAccount(selectedSV);
+                    showDialogAgain("Xóa thành công");
+                    panelSinhVien.removeAll();
+                    showTableSinhVienAll();
+                    panelLH.removeAll();
+                    showTableLop();
+                    resetTxtSinhVien();
+                } else showDialogAgain("Xóa không thành công");
+            }
+        });
+        btnResetSV.addActionListener(e -> {
+            resetTxtSinhVien();
+        });
+
+        //Kiểm tra sv đăng ký học phần
+        initSvDkHp();
+
     }
 
     //Hàm init ban đầu
@@ -876,6 +1028,7 @@ public class trangChu {
         frame.setContentPane(new trangChu().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        close = frame;
         frame.setVisible(true);
     }
 
@@ -931,9 +1084,9 @@ public class trangChu {
         raBtnNamgv.setSelected(true);
 
         //add JDateChooser
-        dateChooserGv = new JDateChooser(today.getTime());
-        dateChooserGv.setDateFormatString("yyyy-MM-dd");
-        pnNgaySinhGV.add(dateChooserGv);
+        dateChooserSv = new JDateChooser(today.getTime());
+        dateChooserSv.setDateFormatString("yyyy-MM-dd");
+        panelNgaySinhSV.add(dateChooserSv);
     }
 
     //init Giáo vụ
@@ -976,7 +1129,6 @@ public class trangChu {
         dkhp.add(raHK1_Dkhp);
         dkhp.add(raHK2_Dkhp);
         dkhp.add(raHK3_Dkhp);
-
         raHK1_Dkhp.setSelected(true);
 
         dateChooserBDdkhp = new JDateChooser(today.getTime());
@@ -985,6 +1137,13 @@ public class trangChu {
         dateChooserKTdkhp.setDateFormatString("yyyy-MM-dd");
         panelNgayBDKHP.add(dateChooserBDdkhp);
         panelNgayKTDKHP.add(dateChooserKTdkhp);
+
+        dateChooserBDdkhp1 = new JDateChooser(today.getTime());
+        dateChooserKTdkhp1 = new JDateChooser(today.getTime());
+        dateChooserBDdkhp1.setDateFormatString("yyyy-MM-dd");
+        dateChooserKTdkhp1.setDateFormatString("yyyy-MM-dd");
+        panelNgayBDkhpHT.add(dateChooserBDdkhp1);
+        panelNgayKTkhpHT.add(dateChooserKTdkhp1);
     }
 
     //init Courses
@@ -1023,6 +1182,79 @@ public class trangChu {
 
         PlainDocument doc = (PlainDocument) tSoSlotHP.getDocument();
         doc.setDocumentFilter(new MyIntFilter());
+    }
+
+    //init Sinh Viên
+    public void initSinhVien() {
+        showTableSinhVienAll();
+        //add JDateChooser
+        dateChooserGv = new JDateChooser(today.getTime());
+        dateChooserGv.setDateFormatString("yyyy-MM-dd");
+        pnNgaySinhGV.add(dateChooserGv);
+
+        ButtonGroup g = new ButtonGroup();
+        g.add(raNamSV);
+        g.add(raNuSV);
+        raNamSV.setSelected(true);
+
+        for (Clazz clazz : ClazzDAO.getAllClass()) {
+            comboTenLop.addItem(clazz.getfTenLh());
+        }
+
+        tSearchSV.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search(tSearchSV.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search(tSearchSV.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search(tSearchSV.getText());
+            }
+
+            public void search(String str) {
+                if (str.length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter(str));
+                }
+            }
+
+        });
+    }
+
+    //init Kiểm tra sv đã đăng ký học phần
+    public void initSvDkHp() {
+        showTableSinhVienHocPhan();
+        tSVHPsearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search(tSVHPsearch.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search(tSVHPsearch.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search(tSVHPsearch.getText());
+            }
+
+            public void search(String str) {
+                if (str.length() == 0) {
+                    sorter1.setRowFilter(null);
+                } else {
+                    sorter1.setRowFilter(RowFilter.regexFilter(str));
+                }
+            }
+        });
     }
 
     //------------------------Các hàm và menu Panel---------------------------------------------------------------------
@@ -1235,17 +1467,18 @@ public class trangChu {
 
     //------------------------Các hàm cho quản lý sinh viên-------------------------------------------------------------
     public void showTableSinhVienAll() {
-        String[] columnsSV = new String[]{"STT", "Tên học sinh", "Tên Lớp", "Môn đăng ký"};
+        String[] columnsSV = new String[]{"STT", "Tên học sinh", "Tên Lớp"};
         TableModel dataModelLop = new
                 AbstractTableModel() {
                     List<AccountsStu> listSV = ClassStudentDAO.getAllAcc();
+                    //List<AccountsStu> listSV = ClassStudentDAO.getAcc_Lop(lop);
 
                     public String getColumnName(int columnIndex) {
                         return columnsSV[columnIndex];
                     }
 
                     public int getColumnCount() {
-                        return 4;
+                        return 3;
                     }
 
                     public int getRowCount() {
@@ -1257,15 +1490,16 @@ public class trangChu {
                         switch (columnIndex) {
                             case 0:
                                 return si.getfMaTkSV();
+                            //return rowIndex+1;
                             case 1:
                                 return si.getfHoTen();
                             case 2:
                                 return si.get_lopHoc().getfTenLh();
-                            case 3:
-                                CheckboxGroup checkboxGroup = new CheckboxGroup();
-                                //for get môn học
-                                //Check môn đk
-                                return checkboxGroup;
+//                            case 3:
+//                                CheckboxGroup checkboxGroup = new CheckboxGroup();
+//                                //for get môn học
+//                                //Check môn đk
+//                                return checkboxGroup;
                         }
                         return null;
                     }
@@ -1278,19 +1512,83 @@ public class trangChu {
                             case 1:
                             case 2:
                                 return String.class;
-                            case 3:
-                                return CheckboxGroup.class;
+//                            case 3:
+//                                return CheckboxGroup.class;
                         }
                         return null;
                     }
                 };
-        panelLH.setLayout(new BorderLayout());
-        panelLH.add(tableLopHoc, BorderLayout.CENTER);
-        panelLH.add(new JScrollPane(tableLopHoc));
-        panelLH.add(tableLopHoc.getTableHeader(), BorderLayout.NORTH);
-        tableLopHoc.setAutoCreateRowSorter(true);
-        tableLopHoc.setModel(dataModelLop);
+        panelSinhVien.setLayout(new BorderLayout());
+        panelSinhVien.add(tableSinhVien, BorderLayout.CENTER);
+        panelSinhVien.add(new JScrollPane(tableSinhVien));
+        panelSinhVien.add(tableSinhVien.getTableHeader(), BorderLayout.NORTH);
+        tableSinhVien.setAutoCreateRowSorter(true);
+        tableSinhVien.setModel(dataModelLop);
 
+        //add search
+        sorter = new TableRowSorter<>(dataModelLop);
+        tableSinhVien.setRowSorter(sorter);
+
+    }
+
+    public void showTableSinhVienMonDaDK(int maSV) {
+        String[] columnsSV_Mon = new String[]{"Mã môn", "Tên môn", "Số tín chỉ"};
+        TableModel dataModelLop_mon = new
+                AbstractTableModel() {
+                    List<Course> listSV_mon = SinhVienHocPhanDAO.getAllCoursesHienTaiDaDk(maSV);
+
+                    //List<AccountsStu> listSV = ClassStudentDAO.getAcc_Lop(lop);
+                    public String getColumnName(int columnIndex) {
+                        return columnsSV_Mon[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 3;
+                    }
+
+                    public int getRowCount() {
+                        return listSV_mon.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        Course si = listSV_mon.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.get_monHoc().getFidMh();
+                            case 1:
+                                return si.get_monHoc().getfTenMh();
+                            case 2:
+                                return si.get_monHoc().getfSoTinChi();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 2:
+                                return Integer.class;
+                            case 0:
+                            case 1:
+                                return String.class;
+                        }
+                        return null;
+                    }
+                };
+        panelMonCuaSV.setLayout(new BorderLayout());
+        panelMonCuaSV.add(tableMonCuaSV, BorderLayout.CENTER);
+        panelMonCuaSV.add(new JScrollPane(tableMonCuaSV));
+        panelMonCuaSV.add(tableMonCuaSV.getTableHeader(), BorderLayout.NORTH);
+        tableMonCuaSV.setAutoCreateRowSorter(true);
+        tableMonCuaSV.setModel(dataModelLop_mon);
+    }
+
+    public void resetTxtSinhVien() {
+        tMKSV.setText("");
+        tTenSV.setText("");
+        tDiaChiSV.setText("");
+        tDTSinhVien.setText("");
+        tTaiKhoanGv.setText("");
     }
 
     //------------------------Các hàm cho quản lý Môn học---------------------------------------------------------------
@@ -1545,7 +1843,7 @@ public class trangChu {
         dateChooserBDdkhp.setDate(today.getTime());
     }
 
-    //------------------------Các hàm cho quản lý Hoc phan------------------------------------------------------------------
+    //------------------------Các hàm cho quản lý Hoc phan--------------------------------------------------------------
     //show table học kì
     public void showTableHocPhan() {
         String[] columnsDKHP = new String[]{"Mã môn", "Tên môn", "Số tín chỉ", "Giáo viên", "Thứ học", "Ca học", "Số slot"};
@@ -1619,6 +1917,132 @@ public class trangChu {
         tSoSlotHP.setText("");
         rahpT2.setSelected(true);
         raCa1.setSelected(true);
+    }
+
+    //------------------------Các hàm cho quản lý Hoc phan SV đã đăng ký------------------------------------------------
+    //show table học kì
+    public void showTableSinhVienHocPhan(String tenMon) {
+        String[] columnsSV = new String[]{"MSSV", "Tên sinh viên", "Tên môn", "Tên giáo viên", "Thời gian học", "Ngày đăng ký HP"};
+        TableModel dataModelLop_Hp = new
+                AbstractTableModel() {
+                    List<AccountsStu> listSV = SinhVienHocPhanDAO.getAllSvdaHPdaDkHtTheoTen(tenMon);
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsSV[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 6;
+                    }
+
+                    public int getRowCount() {
+                        return listSV.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        AccountsStu si = listSV.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return si.getfTaiKhoan();
+                            //return rowIndex+1;
+                            case 1:
+                                return si.getfHoTen();
+                            case 2:
+                                return tenMon;
+                            case 3:
+                                return AccountDAO.getAccount(SinhVienHocPhanDAO.findSV_TenMonHoc(si.getfMaTkSV(), tenMon).getfMaGv()).getfHoTen();
+                            case 4:
+                                return SinhVienHocPhanDAO.findSV_TenMonHoc(si.getfMaTkSV(), tenMon).getfCaHoc() + "-" + SinhVienHocPhanDAO.findSV_TenMonHoc(si.getfMaTkSV(), tenMon).getfThuHoc();
+                            case 5:
+                                return SinhVienHocPhanDAO.findSv_MaHP(si.getfMaTkSV(), SinhVienHocPhanDAO.findSV_TenMonHoc(si.getfMaTkSV(), tenMon).getfMaHp()).getFngayDKhp();
+
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 4:
+                            case 5:
+                                return String.class;
+                        }
+                        return null;
+                    }
+                };
+        panelHPSvDk.setLayout(new BorderLayout());
+        panelHPSvDk.add(tableHPSvDk, BorderLayout.CENTER);
+        panelHPSvDk.add(new JScrollPane(tableHPSvDk));
+        panelHPSvDk.add(tableHPSvDk.getTableHeader(), BorderLayout.NORTH);
+        tableHPSvDk.setAutoCreateRowSorter(true);
+        tableHPSvDk.setModel(dataModelLop_Hp);
+    }
+
+    public void showTableSinhVienHocPhan() {
+        String[] columnsDKHP = new String[]{"MSSV", "Tên sinh viên", "Tên môn", "Tên giáo viên", "Thời gian học", "Ngày đăng ký HP"};
+        TableModel dataModelHP = new
+                AbstractTableModel() {
+                    List<StudentDkhp> listDkhp = SinhVienHocPhanDAO.getAll();
+
+                    public String getColumnName(int columnIndex) {
+                        return columnsDKHP[columnIndex];
+                    }
+
+                    public int getColumnCount() {
+                        return 6;
+                    }
+
+                    public int getRowCount() {
+                        return listDkhp.size();
+                    }
+
+                    public Object getValueAt(int rowIndex, int columnIndex) {
+                        StudentDkhp si = listDkhp.get(rowIndex);
+                        switch (columnIndex) {
+                            case 0:
+                                return ClassStudentDAO.getAccByName(si.getfMaTK()).getfTaiKhoan();
+                            case 1:
+                                return ClassStudentDAO.getAccByName(si.getfMaTK()).getfHoTen();
+                            case 2:
+                                return CourseDAO.get(si.getfMaCourse()).get_monHoc().getfTenMh();
+                            case 3:
+                                return AccountDAO.getAccount(CourseDAO.get(si.getfMaCourse()).getfMaGv()).getfHoTen();
+                            case 4:
+                                return CourseDAO.get(si.getfMaCourse()).getfThuHoc();
+                            case 5:
+                                return si.getFngayDKhp();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        switch (columnIndex) {
+                            case 2:
+                            case 0:
+                            case 1:
+                            case 4:
+                            case 3:
+                                return String.class;
+                            case 5:
+                                return Date.class;
+                        }
+                        return null;
+                    }
+                };
+        panelHPSvDk.setLayout(new BorderLayout());
+        panelHPSvDk.add(tableHPSvDk, BorderLayout.CENTER);
+        panelHPSvDk.add(new JScrollPane(tableHPSvDk));
+        panelHPSvDk.add(tableHPSvDk.getTableHeader(), BorderLayout.NORTH);
+        tableHPSvDk.setAutoCreateRowSorter(true);
+        tableHPSvDk.setModel(dataModelHP);
+
+        //add search
+        sorter1 = new TableRowSorter<>(dataModelHP);
+        tableHPSvDk.setRowSorter(sorter1);
     }
 
     //Code tham kháo https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
