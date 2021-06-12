@@ -195,7 +195,7 @@ public class trangChuSV {
         frame.setContentPane(new trangChuSV().mainPanelSV);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         //frame.setUndecorated(true);
 
         close = frame;

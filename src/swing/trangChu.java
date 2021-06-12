@@ -216,6 +216,7 @@ public class trangChu {
     private JTextField tSearchMonHoc;
     private JPanel pnSV;
     private JButton btnResetMKSV;
+    private JButton btnSuaSV;
     private JTextField tGiaoVuSearch;
     //cho bang môn học
     private Subjects selectedSub;
@@ -612,18 +613,13 @@ public class trangChu {
                     showTableHocKi();
                     panelHocPhan.removeAll();
                     showTableHocPhan();
-                    initDKHP();
+                    panelDKHP.removeAll();
                     showTableDKHP();
                     tNamHK.setText("");
 
                     //mới thêm
-                    initDKHP();
                     panelMonCuaSV.removeAll();
                     showTableSinhVienMonDaDK(selectedSV.getfMaTkSV());
-
-                    //
-                    panelDKHP.removeAll();
-                    showTableDKHP();
                 } else {
                     showDialogAgain("Set học kì hiện tại không thành công");
                     tNamHK.setText("");
@@ -694,7 +690,6 @@ public class trangChu {
                         showDialogAgain("Lưu học kì thành công");
                         panelHK.removeAll();
                         showTableHocKi();
-                        initDKHP();
                         tNamHK.setText("");
                     } else {
                         showDialogAgain("Lưu không thành công");
@@ -933,9 +928,9 @@ public class trangChu {
             course.setfPhongHoc(tPhongHocHP.getText());
             course.setfMaMH(SubjectDAO.getByTen(comboBoxTenMon.getSelectedItem().toString()).getfMaMh());
 
-            if (tPhongHocHP.getText().equals("") && comboSoTinChi.getSelectedItem().toString().equals("")
-                    && comboBoxTenMon.getSelectedItem().toString().equals("") || comboTenGiaoVien.getSelectedItem().toString().equals("")
-                    && tSoSlotHP.getText().equals("")) {
+            if (tPhongHocHP.getText().equals("") || comboSoTinChi.getSelectedItem().toString().equals("")
+                    || comboBoxTenMon.getSelectedItem().toString().equals("") || comboTenGiaoVien.getSelectedItem().toString().equals("")
+                    || tSoSlotHP.getText().equals("")) {
                 showDialogAgain("Vui lòng điền đầy đủ thông tin");
             } else {
                 if (!CourseDAO.isExisted(course)) {
@@ -1047,6 +1042,39 @@ public class trangChu {
                 } else showDialogAgain("Xóa không thành công");
             }
         });
+        btnSuaSV.addActionListener(e -> {
+            java.util.List<AccountsStu> rssv = ClassStudentDAO.getAllAcc();
+            selectedIndexSV = tableSinhVien.convertRowIndexToModel(tableSinhVien.getSelectedRow());
+            selectedSV = rssv.get(selectedIndexSV);
+
+            selectedSV.setfHoTen(tTenSV.getText());
+            selectedSV.setfTaiKhoan(tTaiKhoanSV.getText());
+            selectedSV.setfPass(String.valueOf(tMKSV.getPassword()));
+            selectedSV.setfDienThoai(tDTSinhVien.getText());
+            selectedSV.setfDiaChi(tDiaChiSV.getText());
+            if (raNamSV.isSelected())
+                selectedSV.setfGioiTinh("Nam");
+            else
+                selectedSV.setfGioiTinh("Nữ");
+            java.util.Date utilDateSV = dateChooserSv.getDate();
+            java.sql.Date sqlDate = new java.sql.Date(utilDateSV.getTime());
+            selectedSV.setfNgaySinh(sqlDate);
+            selectedSV.set_lopHoc(ClazzDAO.getClassTen(comboTenLop.getSelectedItem().toString()));
+            selectedSV.setfMaLop(ClazzDAO.getClassTen(comboTenLop.getSelectedItem().toString()).getfMaLh());
+            if (tTenSV.getText().equals("") || String.valueOf(tMKSV.getPassword()).equals("") || comboTenLop.getSelectedItem().toString().equals("")) {
+                showDialogAgain("Vui lòng nhập đầy đủ thông tin");
+            } else {
+                if (showDialog()) {
+                    ClassStudentDAO.updateAccount(selectedSV);
+                    showDialogAgain("Sửa thành công");
+                    panelSinhVien.removeAll();
+                    showTableSinhVienAll();
+                    panelLH.removeAll();
+                    showTableLop();
+                    resetTxtSinhVien();
+                } else showDialogAgain("Sửa sinh viên thất bại");
+            }
+        });
         btnResetSV.addActionListener(e -> {
             resetTxtSinhVien();
         });
@@ -1070,6 +1098,7 @@ public class trangChu {
 
         //Kiểm tra sv đăng ký học phần
         initSvDkHp();
+
     }
 
     //Hàm init ban đầu
@@ -1080,6 +1109,7 @@ public class trangChu {
         frame.setContentPane(new trangChu().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         close = frame;
         frame.setVisible(true);
     }
@@ -1255,6 +1285,7 @@ public class trangChu {
         for (Subjects subjects : SubjectDAO.getAllSubjects()) {
             comboBoxTenMon.addItem(subjects.getfTenMh());
         }
+        tSoSlotHP.setText("120");
         ActionListener actionListenerForTenMon = e -> {
             String s = (String) comboBoxTenMon.getSelectedItem();
             comboSoTinChi.setSelectedItem(SubjectDAO.getByTen(s).getfSoTinChi());

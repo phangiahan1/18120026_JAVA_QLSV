@@ -180,9 +180,9 @@ public class CourseDAO {
         return kq;
     }
 
-    public static void main(String[] args) {
-        for (Course course : CourseDAO.getAllCoursesHienTai()) {
-            System.out.println(course.toString());
-        }
-    }
+//    public static void main(String[] args) {
+//        for (Course course : CourseDAO.getAllCoursesHienTai()) {
+//            System.out.println(course.toString());
+//        }
+//    }
 }

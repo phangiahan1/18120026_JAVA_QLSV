@@ -156,10 +156,10 @@ public class ClazzDAO {
         return kq;
     }
 
-    public static void main(String[] args) {
-        System.out.println(ClazzDAO.getClassMa(1).toString());
-
-    }
+//    public static void main(String[] args) {
+//        System.out.println(ClazzDAO.getClassMa(1).toString());
+//
+//    }
 }
 
 

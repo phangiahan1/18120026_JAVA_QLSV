@@ -19,7 +19,6 @@ public class dangNhap {
     List<AccountsStu> rs1 = ClassStudentDAO.getAllAcc();
     private JPanel mainPanel;
     private JButton btnDangNhap;
-    private JButton btnQuenMK;
     private JButton btnThoat;
     private JPasswordField txtPass;
     private JTextField txtTaiKhoan;
@@ -86,13 +85,6 @@ public class dangNhap {
 
         });
         btnX.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                System.exit(0);
-            }
-        });
-        btnThoat.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);

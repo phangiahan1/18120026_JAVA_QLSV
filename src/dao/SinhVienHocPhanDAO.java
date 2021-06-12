@@ -329,15 +329,15 @@ public class SinhVienHocPhanDAO {
         }
     }
 
-    public static void main(String[] args) {
-        List<StudentDkhp> list = getAll();
-        if (list.size() == 0) {
-            System.out.println("Không có");
-        } else {
-            for (StudentDkhp studentDkhp : list) {
-                System.out.println(studentDkhp.toString());
-            }
-            System.out.println(list.size());
-        }
-    }
+//    public static void main(String[] args) {
+//        List<StudentDkhp> list = getAll();
+//        if (list.size() == 0) {
+//            System.out.println("Không có");
+//        } else {
+//            for (StudentDkhp studentDkhp : list) {
+//                System.out.println(studentDkhp.toString());
+//            }
+//            System.out.println(list.size());
+//        }
+//    }
 }

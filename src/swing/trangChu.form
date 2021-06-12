@@ -1046,7 +1046,7 @@
                           </component>
                         </children>
                       </grid>
-                      <grid id="b4c66" binding="pnSV" layout-manager="GridLayoutManager" row-count="10" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="b4c66" binding="pnSV" layout-manager="GridLayoutManager" row-count="10" column-count="10" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -1131,7 +1131,7 @@
                           </component>
                           <component id="49a78" class="javax.swing.JTextField" binding="tTenSV">
                             <constraints>
-                              <grid row="1" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                              <grid row="1" column="1" row-span="1" col-span="9" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                                 <preferred-size width="150" height="-1"/>
                               </grid>
                             </constraints>
@@ -1143,7 +1143,7 @@
                           </component>
                           <component id="332da" class="javax.swing.JTextField" binding="tDiaChiSV">
                             <constraints>
-                              <grid row="5" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                              <grid row="5" column="1" row-span="1" col-span="9" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                                 <preferred-size width="150" height="-1"/>
                               </grid>
                             </constraints>
@@ -1154,7 +1154,7 @@
                           </component>
                           <component id="32f96" class="javax.swing.JTextField" binding="tDTSinhVien">
                             <constraints>
-                              <grid row="6" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                              <grid row="6" column="1" row-span="1" col-span="9" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                                 <preferred-size width="150" height="-1"/>
                               </grid>
                             </constraints>
@@ -1165,7 +1165,7 @@
                           </component>
                           <component id="8ad94" class="javax.swing.JPasswordField" binding="tMKSV">
                             <constraints>
-                              <grid row="2" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                              <grid row="2" column="1" row-span="1" col-span="9" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                                 <preferred-size width="150" height="-1"/>
                               </grid>
                             </constraints>
@@ -1176,7 +1176,7 @@
                           </component>
                           <component id="e322f" class="javax.swing.JButton" binding="btnXoaSV">
                             <constraints>
-                              <grid row="9" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                              <grid row="9" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <background color="-11447983"/>
@@ -1211,7 +1211,7 @@
                           </component>
                           <grid id="f9ddc" binding="panelNgaySinhSV" layout-manager="BorderLayout" hgap="0" vgap="0">
                             <constraints>
-                              <grid row="4" column="1" row-span="1" col-span="8" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                              <grid row="4" column="1" row-span="1" col-span="9" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <background color="-11447983"/>
@@ -1233,7 +1233,7 @@
                           </component>
                           <component id="ec6f7" class="javax.swing.JTextField" binding="tTaiKhoanSV">
                             <constraints>
-                              <grid row="0" column="1" row-span="1" col-span="8" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                              <grid row="0" column="1" row-span="1" col-span="9" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                                 <preferred-size width="150" height="-1"/>
                               </grid>
                             </constraints>
@@ -1245,7 +1245,7 @@
                           </component>
                           <component id="6f12f" class="javax.swing.JButton" binding="btnThemSV">
                             <constraints>
-                              <grid row="9" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                              <grid row="9" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <background color="-11447983"/>
@@ -1266,7 +1266,7 @@
                           </component>
                           <component id="7fd81" class="javax.swing.JComboBox" binding="comboTenLop">
                             <constraints>
-                              <grid row="3" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                              <grid row="3" column="1" row-span="1" col-span="7" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <font size="16" style="0"/>
@@ -1284,7 +1284,7 @@
                           </component>
                           <grid id="eaefc" binding="panelMonCuaSV" layout-manager="BorderLayout" hgap="0" vgap="0">
                             <constraints>
-                              <grid row="8" column="1" row-span="1" col-span="8" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                              <grid row="8" column="1" row-span="1" col-span="9" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
                               <background color="-11447983"/>
@@ -1308,6 +1308,17 @@
                               <font size="18" style="1"/>
                               <foreground color="-1180673"/>
                               <text value="Reset Mật khẩu"/>
+                            </properties>
+                          </component>
+                          <component id="ef54b" class="javax.swing.JButton" binding="btnSuaSV">
+                            <constraints>
+                              <grid row="9" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <background color="-11447983"/>
+                              <font size="18" style="1"/>
+                              <foreground color="-1180673"/>
+                              <text value="Sửa"/>
                             </properties>
                           </component>
                         </children>

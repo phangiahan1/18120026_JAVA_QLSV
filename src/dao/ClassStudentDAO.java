@@ -194,10 +194,10 @@ public class ClassStudentDAO {
         }
     }
 
-    public static void main(String[] args) {
-        List<AccountsStu> list = ClassStudentDAO.getAllAcc();
-        for (AccountsStu clazz : list) {
-            System.out.println(clazz.toString());
-        }
-    }
+//    public static void main(String[] args) {
+//        List<AccountsStu> list = ClassStudentDAO.getAllAcc();
+//        for (AccountsStu clazz : list) {
+//            System.out.println(clazz.toString());
+//        }
+//    }
 }

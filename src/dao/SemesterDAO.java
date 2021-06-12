@@ -179,9 +179,9 @@ public class SemesterDAO {
         return acc;
     }
 
-    public static void main(String[] args) {
-        System.out.println(SemesterDAO.getSemester(1));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(SemesterDAO.getSemester(1));
+//    }
 }
 
 
