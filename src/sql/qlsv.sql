@@ -224,9 +224,9 @@ create table semester
 insert into semester(f_tenHK, f_namHoc, f_ngayBD, f_ngayKT, f_HKhienTai)
 values ('HK1', '2020-2021', '2020/9/1', '2021/1/31', 0);
 insert into semester(f_tenHK, f_namHoc, f_ngayBD, f_ngayKT, f_HKhienTai)
-values ('HK2', '2020-2021', '2021/3/1', '2021/6/30', 1);
+values ('HK2', '2020-2021', '2021/3/1', '2021/6/30', 0);
 insert into semester(f_tenHK, f_namHoc, f_ngayBD, f_ngayKT, f_HKhienTai)
-values ('HK3', '2020-2021', '2021/7/1', '2021/8/31', 0);
+values ('HK3', '2020-2021', '2021/7/1', '2021/8/31', 1);
 
 insert into semester(f_tenHK, f_namHoc, f_ngayBD, f_ngayKT, f_HKhienTai)
 values ('HK1', '2021-2022', '2021/9/1', '2022/1/31', 0);
@@ -255,7 +255,7 @@ values (1, 2, '2021/2/20', '2021/2/27');
 insert into dkhp
 values (2, 1, '2020/8/20', '2020/8/27');
 insert into dkhp
-values (3, 2, '2021/3/1', '2021/3/7');
+values (3, 3, '2021/6/11', '2021/7/20');
 
 create table course
 (
@@ -266,37 +266,68 @@ create table course
     f_phongHoc nvarchar(255),
     f_caHoc    int,
     f_thuHoc   nvarchar(255),
+    f_soSlot   int not null,
     foreign key (f_maHK) references semester (f_maHK) on delete cascade,
     foreign key (f_maMH) references subjects (f_maMH) on delete cascade,
     foreign key (f_idGV) references accounts (f_maTK) on delete cascade
 );
 
 insert into course
-values (1, 1, 1, 3, 'E108', 1, N'Thứ 2');
+values (1, 1, 1, 3, 'E108', 1, N'Thứ 2', 100);
 insert into course
-values (2, 1, 2, 3, 'E101', 1, N'Thứ 4');
+values (2, 1, 2, 3, 'E101', 1, N'Thứ 4', 100);
 insert into course
-values (3, 1, 3, 3, 'E102', 1, N'Thứ 5');
+values (3, 1, 3, 3, 'E102', 1, N'Thứ 5', 100);
 insert into course
-values (4, 1, 4, 4, 'E103', 1, N'Thứ 2');
+values (4, 1, 4, 4, 'E103', 1, N'Thứ 2', 100);
 insert into course
-values (5, 1, 5, 4, 'E104', 1, N'Thứ 7');
+values (5, 1, 5, 4, 'E104', 1, N'Thứ 7', 100);
 insert into course
-values (6, 1, 5, 4, 'E105', 1, N'Thứ 2');
+values (6, 1, 5, 4, 'E105', 1, N'Thứ 2', 100);
 insert into course
-values (7, 1, 7, 5, 'E208', 1, N'Thứ 4');
+values (7, 1, 7, 5, 'E208', 1, N'Thứ 4', 100);
 insert into course
-values (8, 1, 8, 5, 'E408', 1, N'Thứ 2,Thứ 5');
+values (8, 1, 8, 5, 'E408', 1, N'Thứ 2', 100);
 insert into course
-values (9, 1, 9, 5, 'E108', 1, N'Thứ 3');
+values (9, 1, 9, 5, 'E108', 1, N'Thứ 3', 100);
 insert into course
-values (10, 1, 10, 5, 'E208', 1, N'Thứ 2,Thứ 7');
+values (10, 1, 10, 5, 'E208', 1, N'Thứ 2', 100);
+
+insert into course
+values (11, 2, 1, 3, 'E108', 1, N'Thứ 2', 100);
+insert into course
+values (12, 2, 2, 3, 'E101', 1, N'Thứ 4', 100);
+insert into course
+values (13, 2, 3, 3, 'E102', 1, N'Thứ 5', 100);
+insert into course
+values (14, 2, 4, 4, 'E103', 1, N'Thứ 2', 100);
+insert into course
+values (15, 2, 5, 4, 'E104', 1, N'Thứ 7', 100);
+insert into course
+values (16, 2, 5, 4, 'E105', 1, N'Thứ 2', 100);
+insert into course
+values (17, 2, 7, 5, 'E208', 1, N'Thứ 4', 100);
+insert into course
+values (18, 2, 8, 5, 'E408', 1, N'Thứ 2', 100);
+insert into course
+values (19, 2, 9, 5, 'E108', 1, N'Thứ 3', 100);
+insert into course
+values (20, 2, 10, 5, 'E208', 1, N'Thứ 2', 100);
 
 create table student_dkhp
 (
-    f_maHSHP   int not null auto_increment primary key,
-    f_maCourse int not null,
-    f_maTKSV   int not null,
+    f_maHSHP   int  not null auto_increment primary key,
+    f_maCourse int  not null,
+    f_maTKSV   int  not null,
+    f_ngayDKhp date not null,
     foreign key (f_maCourse) references course (f_maHP) on delete cascade,
     foreign key (f_maTKSV) references accountsStu (f_maTKSV) on delete cascade
 );
+
+-- insert into student_dkhp values(1,11,1);
+-- insert into student_dkhp values(2,11,2);
+-- insert into student_dkhp values(3,11,3);
+-- insert into student_dkhp values(4,12,1);
+-- insert into student_dkhp values(5,12,2);
+-- insert into student_dkhp values(6,13,1);
+

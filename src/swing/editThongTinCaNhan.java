@@ -43,8 +43,7 @@ public class editThongTinCaNhan {
 
         tfDC.setText(acc.getfDiaChi());
         tfDT.setText(acc.getfDienThoai());
-        //tfGT.setText(acc.getfGioiTinh());
-        //tfNS.setText(""+acc.getfNgaySinh());
+
         tfTen.setText(acc.getfHoTen());
         tfMK.setText(acc.getfPass());
         tfMKA.setText(acc.getfPass());
@@ -60,23 +59,30 @@ public class editThongTinCaNhan {
         bg.add(nuRadioButton);
 
 
-        btnLuu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Kiểm tra mk trùng khớp nhau ko
-                String mk = String.valueOf(tfMK.getPassword());
+        btnLuu.addActionListener(e -> {
+            if (String.valueOf(tfMK.getPassword()).equals(String.valueOf(tfMKA.getPassword()))) {
+                if (showDialog()) {
+                    acc.setfPass(String.valueOf(tfMK.getPassword()));
+                    acc.setfDiaChi(tfDC.getText());
+                    acc.setfDienThoai(tfDT.getText());
+                    java.util.Date utilDate = dateChooser.getDate();
+                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                    acc.setfNgaySinh(sqlDate);
 
-                if (String.valueOf(tfMK.getPassword()).equals(String.valueOf(tfMKA.getPassword()))) {
                     if (showDialog()) {
-                        AccountDAO.UpdateThongTin(acc.getfMaTk(), mk, acc.getfNgaySinh(), tfDT.getText(), tfDC.getText(), 1);
+                        AccountDAO.updateAccount(acc);
+                        showDialogAgain("Update thành công!");
+                        showDialogAgain("Chọn làm mới để cập nhật lại thông tin");
                         close.dispose();
-                        reset = true;
-                    }
-                } else {
-                    showDialogAgain("Mật khẩu nhập sai!!!");
-                    tfMK.setText("");
-                    tfMKA.setText("");
+                    } else showDialogAgain("Update không thành công!!!");
+
+                    close.dispose();
+                    reset = true;
                 }
+            } else {
+                showDialogAgain("Mật khẩu nhập sai!!!");
+                tfMK.setText("");
+                tfMKA.setText("");
             }
         });
         btnThoat.addActionListener(new ActionListener() {

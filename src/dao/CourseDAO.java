@@ -2,6 +2,7 @@ package dao;
 
 import hibernate.Course;
 import hibernate.Semester;
+import hibernate.Subjects;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -62,6 +63,16 @@ public class CourseDAO {
             session.close();
         }
         return courses;
+    }
+
+    public static boolean isCourseHt(Subjects c1) {
+        List<Course> courses = getAllCoursesHienTai();
+        for (Course c : courses) {
+            if (c.getfMaMH() == c1.getfMaMh()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Course get(int fmaHP) {
@@ -156,21 +167,6 @@ public class CourseDAO {
             return c;
         }
         return course;
-        //open session
-//        Session session = HibernateUtil.getSessionFactory().openSession();
-//
-//        Course semesters = new Course();
-//        try {
-//            final String hql = "select acc from Course acc where acc._monHoc.fTenMh = :so";
-//            Query query = session.createQuery(hql);
-//            query.setParameter("so", maHK);
-//            semesters = (Course) query.uniqueResult();
-//        } catch (HibernateException e) {
-//            System.err.println(e);
-//        } finally {
-//            session.close();
-//        }
-//        return semesters;
     }
 
     public static List<Course> getAllHocPhanByTenMonHienTai(String tenMon) {

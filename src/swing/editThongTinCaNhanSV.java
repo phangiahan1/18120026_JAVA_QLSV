@@ -41,8 +41,8 @@ public class editThongTinCaNhanSV {
 
         tfDC.setText(acc.getfDiaChi());
         tfDT.setText(acc.getfDienThoai());
-        //tfGT.setText(acc.getfGioiTinh());
-        //tfNS.setText(""+acc.getfNgaySinh());
+
+
         tfTen.setText(acc.getfHoTen());
         tfMK.setText(acc.getfPass());
         tfMKA.setText(acc.getfPass());
@@ -66,6 +66,9 @@ public class editThongTinCaNhanSV {
                     acc.setfPass(String.valueOf(tfMK.getPassword()));
                     acc.setfDiaChi(tfDC.getText());
                     acc.setfDienThoai(tfDT.getText());
+                    java.util.Date utilDate = dateChooser.getDate();
+                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                    acc.setfNgaySinh(sqlDate);
 
                     if (showDialog()) {
                         ClassStudentDAO.updateAccount(acc);

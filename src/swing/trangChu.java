@@ -211,6 +211,12 @@ public class trangChu {
     private JPanel panelHPSvDk;
     private JPanel panelHPSvDkSearch;
     private JTextField tSVHPsearch;
+    private JButton btnResetMKGV;
+    private JTextField tSearchGV;
+    private JTextField tSearchMonHoc;
+    private JPanel pnSV;
+    private JButton btnResetMKSV;
+    private JTextField tGiaoVuSearch;
     //cho bang môn học
     private Subjects selectedSub;
     private int selectedIndexSub;
@@ -232,6 +238,9 @@ public class trangChu {
     //Search sv
     private TableRowSorter sorter;
     private TableRowSorter sorter1;
+    private TableRowSorter sorter2;
+    private TableRowSorter sorter3;
+
 
     public trangChu() {
         //Khởi tạo dữ liệu ban đầu, cho bảng thông tin cá nhân
@@ -243,7 +252,6 @@ public class trangChu {
         //btn Thông tin cá nhân
         btnEditThongTin.addActionListener(e -> {
             editThongTinCaNhan.init(acc);
-
         });
         btnReTT.addActionListener(e -> {
             update();
@@ -323,6 +331,22 @@ public class trangChu {
                 showDialogAgain("Edit không hoàn thành!!!");
                 resetTxt();
             }
+        });
+        btnResetMKGV.addActionListener(e -> {
+            java.util.List<Accounts> rsGV2 = AccountDAO.getAllAccountsGV();
+            selectedIndex = tableGiaoVu.convertRowIndexToModel(tableGiaoVu.getSelectedRow());
+            selectedAcc = rsGV2.get(selectedIndex);
+            if (tTenGV.getText().equals("") || String.valueOf(tMkgv.getPassword()).equals("") || tTaiKhoanGv.getText().equals("")) {
+                showDialogAgain("Cần nhập đầy đủ: Tài khoản, Mật khẩu, Loại");
+            } else {
+                selectedAcc.setfPass("1234");
+            }
+            AccountDAO.updateAccount(selectedAcc);
+            showDialogAgain("Reset mật khẩu thành 1234 !!!");
+            panel.removeAll();
+            showTableGiaoVu();
+            initCourse();
+            resetTxt();
         });
         btnResetGV.addActionListener(e -> {
             resetTxt();
@@ -481,20 +505,24 @@ public class trangChu {
             selectedSub = rsSU1.get(selectedIndexSub);
 
             if (!SubjectDAO.isExistedSub(selectedSub)) {
-                showDialogAgain("Tài khoản không tồn tại!!!");
+                showDialogAgain("Môn học không tồn tại!!!");
             } else {
-                if (showDialogDelete()) {
-                    SubjectDAO.deleteSub(selectedSub);
-                    showDialogAgain("Xóa thành công!!!");
-                    panelMH.removeAll();
-                    showTableMonHoc();
-                    initCourse();
-                    tTenMH.setText("");
-                    tMaMH.setText("");
+                if (CourseDAO.isCourseHt(selectedSub)) {
+                    showDialogAgain("Môn học đang được đăng ký trong kì hiện tại, Không thể xóa");
                 } else {
-                    showDialogAgain("Xóa không hoàn thành!!!");
-                    tTenMH.setText("");
-                    tMaMH.setText("");
+                    if (showDialogDelete()) {
+                        SubjectDAO.deleteSub(selectedSub);
+                        showDialogAgain("Xóa thành công!!!");
+                        panelMH.removeAll();
+                        showTableMonHoc();
+                        initCourse();
+                        tTenMH.setText("");
+                        tMaMH.setText("");
+                    } else {
+                        showDialogAgain("Xóa không hoàn thành!!!");
+                        tTenMH.setText("");
+                        tMaMH.setText("");
+                    }
                 }
             }
         });
@@ -589,8 +617,13 @@ public class trangChu {
                     tNamHK.setText("");
 
                     //mới thêm
+                    initDKHP();
                     panelMonCuaSV.removeAll();
                     showTableSinhVienMonDaDK(selectedSV.getfMaTkSV());
+
+                    //
+                    panelDKHP.removeAll();
+                    showTableDKHP();
                 } else {
                     showDialogAgain("Set học kì hiện tại không thành công");
                     tNamHK.setText("");
@@ -728,12 +761,14 @@ public class trangChu {
                     if (showDialog()) {
                         if (ClazzDAO.saveLop(clazz)) {
                             showDialogAgain("Thêm lớp thành công");
+                            comboTenLop.addItem(tTenLop.getText());
                             panelLH.removeAll();
                             tTenLop.setText("");
                             tTongNu.setText("");
                             tTongNam.setText("");
                             tTongSV.setText("");
                             showTableLop();
+
                         } else {
                             showDialogAgain("Thêm không thành công");
                         }
@@ -756,12 +791,14 @@ public class trangChu {
                 if (showDialogDelete()) {
                     if (ClazzDAO.deleteLop(selectedClass)) {
                         showDialogAgain("Xóa thành công");
+                        comboTenLop.removeItem(tTenLop.getText());
                         panelLH.removeAll();
                         tTenLop.setText("");
                         tTongNu.setText("");
                         tTongNam.setText("");
                         tTongSV.setText("");
                         showTableLop();
+
                     } else {
                         showDialogAgain("Xóa không thành công");
                     }
@@ -866,7 +903,6 @@ public class trangChu {
                 }
             }
         });
-
         btnResetHP.addActionListener(e -> {
             ResetTxtHocPhan();
         });
@@ -1014,10 +1050,26 @@ public class trangChu {
         btnResetSV.addActionListener(e -> {
             resetTxtSinhVien();
         });
+        btnResetMKSV.addActionListener(e -> {
+            java.util.List<AccountsStu> rssv = ClassStudentDAO.getAllAcc();
+            selectedIndexSV = tableSinhVien.convertRowIndexToModel(tableSinhVien.getSelectedRow());
+            selectedSV = rssv.get(selectedIndexSV);
+            selectedSV.setfPass("1234");
+
+            if (selectedSV != null) {
+                ClassStudentDAO.updateAccount(selectedSV);
+                showDialogAgain("Reset mật khẩu thành 1234");
+                panelSinhVien.removeAll();
+                showTableSinhVienAll();
+                panelLH.removeAll();
+                showTableLop();
+                resetTxtSinhVien();
+            }
+
+        });
 
         //Kiểm tra sv đăng ký học phần
         initSvDkHp();
-
     }
 
     //Hàm init ban đầu
@@ -1087,6 +1139,32 @@ public class trangChu {
         dateChooserSv = new JDateChooser(today.getTime());
         dateChooserSv.setDateFormatString("yyyy-MM-dd");
         panelNgaySinhSV.add(dateChooserSv);
+
+        //thêm search
+        tSearchGV.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search(tSearchGV.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search(tSearchGV.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search(tSearchGV.getText());
+            }
+
+            public void search(String str) {
+                if (str.length() == 0) {
+                    sorter2.setRowFilter(null);
+                } else {
+                    sorter2.setRowFilter(RowFilter.regexFilter(str));
+                }
+            }
+        });
     }
 
     //init Giáo vụ
@@ -1101,6 +1179,31 @@ public class trangChu {
         bgmh.add(a6RadioButton);
 
         a1RadioButton.setSelected(true);
+
+        tSearchMonHoc.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search(tSearchMonHoc.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search(tSearchMonHoc.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search(tSearchMonHoc.getText());
+            }
+
+            public void search(String str) {
+                if (str.length() == 0) {
+                    sorter3.setRowFilter(null);
+                } else {
+                    sorter3.setRowFilter(RowFilter.regexFilter(str));
+                }
+            }
+        });
     }
 
     //init Học kì
@@ -1224,7 +1327,6 @@ public class trangChu {
                     sorter.setRowFilter(RowFilter.regexFilter(str));
                 }
             }
-
         });
     }
 
@@ -1450,6 +1552,10 @@ public class trangChu {
         panel.add(tableGiaoVu.getTableHeader(), BorderLayout.NORTH);
         tableGiaoVu.setAutoCreateRowSorter(true);
         tableGiaoVu.setModel(dataModelGV);
+
+        //add search
+        sorter2 = new TableRowSorter<>(dataModelGV);
+        tableGiaoVu.setRowSorter(sorter2);
     }
 
     //reset txt giáo vụ
@@ -1588,7 +1694,7 @@ public class trangChu {
         tTenSV.setText("");
         tDiaChiSV.setText("");
         tDTSinhVien.setText("");
-        tTaiKhoanGv.setText("");
+        tTaiKhoanSV.setText("");
     }
 
     //------------------------Các hàm cho quản lý Môn học---------------------------------------------------------------
@@ -1645,6 +1751,10 @@ public class trangChu {
         panelMH.add(tableMonhoc.getTableHeader(), BorderLayout.NORTH);
         tableMonhoc.setAutoCreateRowSorter(true);
         tableMonhoc.setModel(dataModelMH);
+
+        //add search
+        sorter3 = new TableRowSorter<>(dataModelMH);
+        tableMonhoc.setRowSorter(sorter3);
     }
 
     //------------------------Các hàm cho quản lý Học kì----------------------------------------------------------------
